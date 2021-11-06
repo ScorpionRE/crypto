@@ -60,49 +60,55 @@ m,k
 #             r += origin[tmp-1]
 #     return r
 
+#xor
+a = 'lovelovelovelovelovelovelovelove'
+b = [0x0A,0x03,0x17,0x02,0x56,0x01,0x15,0x11,0x0A,0x14,0x0E,0x0A,0x1E,0x30,0x0E,0x0A,0x1E,0x30,0x0E,0x0A,0x1E,0x30,0x14,0x0C,0x19,0x0D,0x1F,0x10,0x0E,0x06,0x03,0x00]
 
-
+c = ''
+for i in range(len(a)):
+    c += chr(ord(a[i])^b[i])
+print(c)
 #"凯撒密码解密")
 #密文
-str = 'R5UALCUVJDCGD63RQISZTBOSO54JVBORP5SAT2OEQCWY6CGEO53Z67L'
-#密钥(平移位数)
-m = ''
-for my in range(1,26):
-    print("密钥",my)
-    for i in str:
-      mw = ord(i)
-      if (64 < mw < 91):#大写字母
-        jm = mw + my
-        if jm > 90:
-              jm = (mw - 26) + my
-              m += chr(jm)
-          #m.join(chr(jm))
-          #print(chr(jm), end='')
-        else:
-            m += chr(jm)
-          #print(chr(jm), end='')
-      elif (96 < mw < 123):#小写字母
-        jm = mw + my
-        if jm > 122:
-            jm = (mw - 26) + my
-            m += chr(jm)
-          #print(chr(jm), end='')
-        else:
-            m += chr(jm)
-          #print(chr(jm), end='')
-      else:#数字和特殊字符不做修改
-        jm = mw + 0
-        m += chr(jm)
-        #print(chr(jm), end='')
-    print(m)
-    try:
-        print(base64.b32decode(m))
-    except binascii.Error:
-        missing_padding = 4 - len(m) % 4
-        if missing_padding:
-            m += b'=' * missing_padding
-        print(base64.b32decode(m))
-    m = ''
-
+# str = 'R5UALCUVJDCGD63RQISZTBOSO54JVBORP5SAT2OEQCWY6CGEO53Z67L'
+# #密钥(平移位数)
+# m = ''
+# for my in range(1,26):
+#     print("密钥",my)
+#     for i in str:
+#       mw = ord(i)
+#       if (64 < mw < 91):#大写字母
+#         jm = mw + my
+#         if jm > 90:
+#               jm = (mw - 26) + my
+#               m += chr(jm)
+#           #m.join(chr(jm))
+#           #print(chr(jm), end='')
+#         else:
+#             m += chr(jm)
+#           #print(chr(jm), end='')
+#       elif (96 < mw < 123):#小写字母
+#         jm = mw + my
+#         if jm > 122:
+#             jm = (mw - 26) + my
+#             m += chr(jm)
+#           #print(chr(jm), end='')
+#         else:
+#             m += chr(jm)
+#           #print(chr(jm), end='')
+#       else:#数字和特殊字符不做修改
+#         jm = mw + 0
+#         m += chr(jm)
+#         #print(chr(jm), end='')
+#     print(m)
+#     try:
+#         print(base64.b32decode(m))
+#     except binascii.Error:
+#         missing_padding = 2 - len(m) % 2  #base64为4
+#         if missing_padding:
+#             m += '=' * missing_padding
+#         print(base64.b32decode(m))
+#     m = ''
+#
 
 
