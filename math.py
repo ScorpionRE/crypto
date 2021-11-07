@@ -4,6 +4,8 @@ import sympy
 
 x = sympy.Symbol('x')
 y = sympy.Symbol("y")
+z = sympy.Symbol("z")
 
-solved_value = sympy.solve([x + y - 2732509502629189160482346120094198557857912754,pow(x,3) + pow(y,3) - 5514544075236012543362261483183657422998274674127032311399076783844902086865451355210243586349132992563718009577051164928513093068525554 ],[x,y])
+
+solved_value = sympy.solve([3*x-y+z-185,2*x+3*y-z-321,x+y+z-173 ],[x,y,z])
 print(solved_value)
