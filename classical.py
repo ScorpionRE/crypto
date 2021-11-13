@@ -61,13 +61,14 @@ m,k
 #     return r
 
 #xor
-a = 'lovelovelovelovelovelovelovelove'
-b = [0x0A,0x03,0x17,0x02,0x56,0x01,0x15,0x11,0x0A,0x14,0x0E,0x0A,0x1E,0x30,0x0E,0x0A,0x1E,0x30,0x0E,0x0A,0x1E,0x30,0x14,0x0C,0x19,0x0D,0x1F,0x10,0x0E,0x06,0x03,0x00]
+# a = 'lovelovelovelovelovelovelovelove'
+# b = [0x0A,0x03,0x17,0x02,0x56,0x01,0x15,0x11,0x0A,0x14,0x0E,0x0A,0x1E,0x30,0x0E,0x0A,0x1E,0x30,0x0E,0x0A,0x1E,0x30,0x14,0x0C,0x19,0x0D,0x1F,0x10,0x0E,0x06,0x03,0x00]
+#
+# c = ''
+# for i in range(len(a)):
+#     c += chr(ord(a[i])^b[i])
+# print(c)
 
-c = ''
-for i in range(len(a)):
-    c += chr(ord(a[i])^b[i])
-print(c)
 #"凯撒密码解密")
 #密文
 # str = 'R5UALCUVJDCGD63RQISZTBOSO54JVBORP5SAT2OEQCWY6CGEO53Z67L'
@@ -111,4 +112,24 @@ print(c)
 #     m = ''
 #
 
+#polybius
+import itertools
 
+key = []
+cipher = "ouauuuoooeeaaiaeauieuooeeiea"
+
+for i in itertools.permutations('aeiou', 5):
+    key.append(''.join(i))
+
+for now_key in key:
+    solve_c = ""
+    res = ""
+    for now_c in cipher:
+        solve_c += str(now_key.index(now_c))
+    for i in range(0,len(solve_c),2):
+        now_ascii = int(solve_c[i])*5+int(solve_c[i+1])+97
+        if now_ascii>ord('i'):
+            now_ascii+=1
+        res += chr(now_ascii)
+    if "flag" in res:
+        print(now_key, res)
