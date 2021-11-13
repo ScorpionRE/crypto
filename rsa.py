@@ -19,6 +19,7 @@ c = 1085420788090577746667480662354732924953437537904439660206360608074183937372
 
 
 
+
 #dp，dq，c求m (RSA_CRT leaks)
 # dp =6500795702216834621109042351193261530650043841056252930930949663358625016881832840728066026150264693076109354874099841380454881716097778307268116910582929
 # dq =783472263673553449019532580386470672380574033551303889137911760438881683674556098098256795673512201963002175438762767516968043599582527539160811120550041
@@ -78,6 +79,37 @@ print(long_to_bytes(M))
 # if missing_padding:
 #     m += '=' * missing_padding
 # print(base64.b64decode(m))
+
+
+#多文件共模攻击
+e1 = 2333
+e2 = 23333
+n = 14853081277902411240991719582265437298941606850989432655928075747449227799832389574251190347654658701773951599098366248661597113015221566041305501996451638624389417055956926238595947885740084994809382932733556986107653499144588614105694518150594105711438983069306254763078820574239989253573144558449346681620784979079971559976102366527270867527423001083169127402157598183442923364480383742653117285643026319914244072975557200353546060352744263637867557162046429886176035616570590229646013789737629785488326501654202429466891022723268768841320111152381619260637023031430545168618446134188815113100443559425057634959299
+with open('myflag1','rb') as f:
+    c1 = base64.b64decode(f.read())
+    print(c1)
+with open('myflag2','rb') as f:
+    c2 = base64.b64decode(f.read())
+    print(c2)
+gcd,s,t = gmpy2.gcdext(e1,e2)
+c1 = libnum.s2n(c1)
+c2 = libnum.s2n(c2)
+if s < 0:
+    s = -s
+    c1 = gmpy2.invert(c1,n)
+if t < 0:
+    t = -t
+    c2 = gmpy2.invert(c2,n)
+
+M = gmpy2.powmod(c1,s,n)*gmpy2.powmod(c2,t,n) % n
+m = hex(M)
+print(m)
+print(codecs.decode(m[2:],'hex'))
+m = m[2:]
+missing_padding = 4 - len(m) % 4
+if missing_padding:
+    m += '=' * missing_padding
+print(base64.b64decode(m))
 
 
 # 分行加密，解密
@@ -272,20 +304,23 @@ import libnum
 # print(flag)
 
 #从公钥文件中获取n、e的值
-# with open("public.key",'rb') as f:
-#     pub = RSA.importKey(f.read())
-#     n = pub.n
-#     e = pub.e
-#     print(n,'\n',e)
-#
-#
-# #解密文件
-#
-# key_info = RSA.construct((n, e, int(d), p, q))
-# key = RSA.importKey(key_info.exportKey())
-# key = PKCS1_OAEP.new(key)
-# f = open('flag.enc', 'r').read()
-# c = base64.b64decode(f)
-# flag = key.decrypt(c)
-# print(flag)
+with open("pubkey2.pem",'rb') as f:
+    pub = RSA.importKey(f.read())
+    n = pub.n
+    e = pub.e
+    print(n,'\n',e)
+
+
+#解密文件
+
+key_info = RSA.construct((n, e, int(d), p, q))
+key = RSA.importKey(key_info.exportKey())
+key = PKCS1_OAEP.new(key)
+f = open('myflag1', 'r').read()
+c = base64.b64decode(f)
+flag = key.decrypt(c)
+print(flag)
+
+
+
 
