@@ -37,16 +37,31 @@ b=a.split(" ")
 #             if s[:4] == 'E903':    #检查元素
 #                 print (s)       #输出密文
 
+#三位爆破
+# flag="de54015e59c7b"
+# m = "69eaae8b278cf1deb43c379be05c06447f37c94090234af2751d3dab1266e36e"
+# for x in range(21,127):
+#     for y in range(21,127):
+#         for z in range(21,127):
+#
+#             w=hashlib.sha256(str(flag + chr(x) + chr(y) + chr(z)  ).encode("utf-8"))
+#             w0=w.hexdigest()
+#
+#             if(w0==m):
+#                 print(flag + chr(x)+chr(y)+chr(z) )
+#                 break
+
+
 #sha256爆破
-flag="PZ5ULgD6vZrXDI48"
-m = "729a17a70db54ade76e2650db58a5e4e55f0c6ded39d4e1c5a18acef33b4e8bd"
+flag="1579ad72fb36"
+m = "65ce2189d6fb335390abf6b5bfffef731c951773810cc1c55a0fcac3f6c62cdc"
 for x in range(21,127):
     for y in range(21,127):
         for z in range(21,127):
             for q in range(21,127):
-                w=hashlib.sha256(str(chr(x) + chr(y) + chr(z) + chr(q) + flag).encode("utf-8"))
+                w=hashlib.sha256(str(flag + chr(x) + chr(y) + chr(z) + chr(q) ).encode("utf-8"))
                 w0=w.hexdigest()
 
                 if(w0==m):
-                    print(chr(x)+chr(y)+chr(z)+chr(q)+flag)
+                    print(flag + chr(x)+chr(y)+chr(z) + chr(q))
                     break
