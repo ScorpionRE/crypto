@@ -9,13 +9,12 @@ from Crypto.PublicKey import RSA
 import gmpy2
 import sympy
 
-n = 2537
-p = 43
-q = 59
+n = 3
+p = 2
+q = 4
 d = 937
-e = 13
-c = 793
-
+e = 65537
+c = 3
 
 
 
@@ -152,6 +151,15 @@ c = 793
 #             if (len(str(flag)) % 2 == 1):
 #                 flag = '0' + flag
 #             print(codecs.decode(flag,'hex'))
+
+#小加密指数 （m^e还是比n小，直接对c开e次方
+e = 0x1001
+with open('rsa16m.txt','r') as f:
+    x = f.read()
+c = eval(x)
+m = gmpy2.iroot(c,e)[0]
+print(long_to_bytes(m))
+
 
 #低解密指数广播攻击，多个n,c找n的公因数
 
@@ -299,13 +307,8 @@ M = pow(c,d,p*q)
 #M = gmpy2.iroot(M,2)[0]
 
 print("十进制M："+ str(M))
-#print(long_to_bytes(M))
+print(long_to_bytes(M))
 #print(libnum.n2s(M))
-H = hex(M)
-print("十六："+H)
-print(chr(97+M))
-# flag = codecs.decode(H[2:], "hex")
-# print(flag)
 
 
 
