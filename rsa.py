@@ -1,6 +1,8 @@
 import base64
 import binascii
 import codecs
+import linecache
+
 import libnum
 from Crypto.Cipher import PKCS1_OAEP
 
@@ -153,10 +155,12 @@ c = 3
 #             print(codecs.decode(flag,'hex'))
 
 #小加密指数 （m^e还是比n小，直接对c开e次方
-e = 0x1001
-with open('rsa16m.txt','r') as f:
-    x = f.read()
-c = eval(x)
+
+e = 0x10001
+
+x = linecache.getline('rsa_16m',2).strip()
+print(x)
+c = int(x[4::],16)
 m = gmpy2.iroot(c,e)[0]
 print(long_to_bytes(m))
 
@@ -294,21 +298,21 @@ import libnum
 #         s = '0' + s
 #     print(s.decode('hex'))
 
-#计算d
-#print(gmpy2.lcm(p-1,q-1))
-phi_n = (p - 1) * (q - 1)
-d = gmpy2.invert(e, phi_n)
-print("d:"+ str(d))
-
-#根据c求m
-M = pow(c,d,p*q)
-
-#e不是素数，需要分解，变形后，m是之前的x次方
-#M = gmpy2.iroot(M,2)[0]
-
-print("十进制M："+ str(M))
-print(long_to_bytes(M))
-#print(libnum.n2s(M))
+# #计算d
+# #print(gmpy2.lcm(p-1,q-1))
+# phi_n = (p - 1) * (q - 1)
+# d = gmpy2.invert(e, phi_n)
+# print("d:"+ str(d))
+#
+# #根据c求m
+# M = pow(c,d,p*q)
+#
+# #e不是素数，需要分解，变形后，m是之前的x次方
+# #M = gmpy2.iroot(M,2)[0]
+#
+# print("十进制M："+ str(M))
+# print(long_to_bytes(M))
+# #print(libnum.n2s(M))
 
 
 
