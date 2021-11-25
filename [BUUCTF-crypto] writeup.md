@@ -146,11 +146,19 @@ for i in m:
 
 ## 现代
 
+### [AFCTF2018]你听过一次一密么？
+
+一次一密（One-Time-Pad）：xor key  明文多长，密文就多长（适合少量明文消息）
+
+Many-Time-Pad攻击：多个明文异或同样的key
 
 
-## RSA
 
-### [HDCTF2019]together  【多文件共模攻击】
+
+
+### RSA
+
+#### [HDCTF2019]together  【多文件共模攻击】
 
 先分别分析两个公钥文件
 
@@ -197,7 +205,7 @@ print(base64.b64decode(m))
 
 
 
-### [MRCTF2020]babyRSA 【数学计算】
+#### [MRCTF2020]babyRSA 【数学计算】
 
 看脚本
 
