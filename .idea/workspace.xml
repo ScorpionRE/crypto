@@ -4,7 +4,7 @@
     <list default="true" id="7b72538f-e700-46a9-b36a-cf7130bfe9a2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/[BUUCTF-crypto] writeup.md" beforeDir="false" afterPath="$PROJECT_DIR$/[BUUCTF-crypto] writeup.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rsa.py" beforeDir="false" afterPath="$PROJECT_DIR$/rsa.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/new.py" beforeDir="false" afterPath="$PROJECT_DIR$/new.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +37,7 @@
       <recent name="D:\ctf\crypto\tool\crypto" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.rsa">
+  <component name="RunManager" selected="Python.mtp">
     <configuration name="1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="crypto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -101,7 +101,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="new" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="mtp" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="crypto" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -113,7 +113,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/new.py" />
+      <option name="SCRIPT_NAME" value="D:\ctf\crypto\tool\crypto\mtp.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -145,8 +145,8 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.mtp" />
         <item itemvalue="Python.rsa" />
-        <item itemvalue="Python.new" />
         <item itemvalue="Python.Rsa (1)" />
         <item itemvalue="Python.1" />
         <item itemvalue="Python.math" />
