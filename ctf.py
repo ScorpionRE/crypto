@@ -3,7 +3,7 @@ import urllib
 
 import gmpy2
 #import primefac
-from crypto.Cipher import AES, DES
+from Crypto.Cipher import AES, DES
 
 alphabet_to_morse = {
     "A": ".-",
