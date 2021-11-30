@@ -2,17 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7b72538f-e700-46a9-b36a-cf7130bfe9a2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/[BUUCTF-crypto] writeup.assets/image-20211128152817403.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bloom-menxian.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/symmetric.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/[BUUCTF-crypto] writeup.md" beforeDir="false" afterPath="$PROJECT_DIR$/[BUUCTF-crypto] writeup.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classical.py" beforeDir="false" afterPath="$PROJECT_DIR$/classical.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/codes.py" beforeDir="false" afterPath="$PROJECT_DIR$/codes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ctf.py" beforeDir="false" afterPath="$PROJECT_DIR$/ctf.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/elgamal.py" beforeDir="false" afterPath="$PROJECT_DIR$/elgamal.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hash.py" beforeDir="false" afterPath="$PROJECT_DIR$/hash.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hex.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/math.py" beforeDir="false" afterPath="$PROJECT_DIR$/math.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rsa.py" beforeDir="false" afterPath="$PROJECT_DIR$/rsa.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ti.py" beforeDir="false" afterPath="$PROJECT_DIR$/ti.py" afterDir="false" />
     </list>
@@ -50,7 +43,7 @@
       <recent name="D:\ctf\crypto\tool\crypto" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.bloom-menxian">
+  <component name="RunManager" selected="Python.ti">
     <configuration name="bloom-menxian" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="crypto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -85,27 +78,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/classical.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="elgamal" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="crypto" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/elgamal.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -156,13 +128,34 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="ti" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="crypto" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ti.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.ti" />
+        <item itemvalue="Python.rsa" />
+        <item itemvalue="Python.classical" />
         <item itemvalue="Python.bloom-menxian" />
         <item itemvalue="Python.hash" />
-        <item itemvalue="Python.rsa" />
-        <item itemvalue="Python.elgamal" />
-        <item itemvalue="Python.classical" />
       </list>
     </recent_temporary>
   </component>

@@ -230,20 +230,78 @@ m,k
 
 
 #hill 希尔密码
-s='wznqcaduqopfkqnwofDbzgeu'
-#未给密钥的自己猜测
-flag_pre='utflag'
-def getit(a1,b1,c1,a2,b2,c2,a3,b3,c3):
-    for i in range(26):
-        for j in range(26):
-            if (a1 * i + b1 * j) % 26 == c1 and (a2 * i + b2 * j) % 26 == c2 and (a3 * i+b3*j) % 26 == c3:
-                return (i,j)
-x1=getit(22,25,20,13,16,5,2,0,0)
-x2=getit(22,25,19,13,16,11,2,0,6)
-import string
-flag=''
-for i in range(0, len(s),2):
-    flag+=string.ascii_letters[(x1[0]*string.ascii_letters.index(s[i])+x1[1]*string.ascii_letters.index(s[i+1]))%26]
-    flag+=string.ascii_letters[(x2[0]*string.ascii_letters.index(s[i])+x2[1]*string.ascii_letters.index(s[i+1]))%26]
-print(flag)
+# s='wznqcaduqopfkqnwofDbzgeu'
+# #未给密钥的自己猜测
+# flag_pre='utflag'
+# def getit(a1,b1,c1,a2,b2,c2,a3,b3,c3):
+#     for i in range(26):
+#         for j in range(26):
+#             if (a1 * i + b1 * j) % 26 == c1 and (a2 * i + b2 * j) % 26 == c2 and (a3 * i+b3*j) % 26 == c3:
+#                 return (i,j)
+# x1=getit(22,25,20,13,16,5,2,0,0)
+# x2=getit(22,25,19,13,16,11,2,0,6)
+# import string
+# flag=''
+# for i in range(0, len(s),2):
+#     flag+=string.ascii_letters[(x1[0]*string.ascii_letters.index(s[i])+x1[1]*string.ascii_letters.index(s[i+1]))%26]
+#     flag+=string.ascii_letters[(x2[0]*string.ascii_letters.index(s[i])+x2[1]*string.ascii_letters.index(s[i+1]))%26]
+# print(flag)
 
+
+letters1 = [
+    'A', 'B', 'C', 'D', 'E', 'F', 'G',
+    'H', 'I', 'J', 'K', 'L', 'M', 'N',
+    'O', 'P', 'Q', 'R', 'S', 'T',
+    'U', 'V', 'W', 'X', 'Y', 'Z',
+]
+letters2 = [
+    'a', 'b', 'c', 'd', 'e', 'f', 'g',
+    'h', 'i', 'j', 'k', 'l', 'm', 'n',
+    'o', 'p', 'q', 'r', 's', 't',
+    'u', 'v', 'w', 'x', 'y', 'z',
+]
+cipher1 = [
+    "aaaaa", "aaaab", "aaaba", "aaabb", "aabaa", "aabab", "aabba",
+    "aabbb", "abaaa", "abaab", "ababa", "ababb", "abbaa", "abbab",
+    "abbba", "abbbb", "baaaa", "baaab", "baaba", "baabb",
+    "babaa", "babab", "babba", "babbb", "bbaaa", "bbaab",
+]
+cipher2 = [
+    "AAAAA", "AAAAB", "AAABA", "AAABB", "AABAA", "AABAB", "AABBA",
+    "AABBB", "ABAAA", "ABAAA", "ABAAB", "ABABA", "ABABB", "ABBAA",
+    "ABBAB", "ABBBA", "ABBBB", "BAAAA", "BAAAB", "BAABA",
+    "BAABB", "BAABB", "BABAA", "BABAB", "BABBA", "BABBB",
+]
+
+
+def bacon1(string):
+    lists = []
+    # 分割，五个一组
+    for i in range(0, len(string), 5):
+        lists.append(string[i:i+5])
+    # print(lists)
+    # 循环匹配，得到下标，对应下标即可
+    for i in range(0, len(lists)):
+        for j in range(0, 26):
+            if lists[i] == cipher1[j]:
+                # print(j)
+                print(letters1[j], end="")
+    print("")
+
+
+def bacon2(string):
+    lists = []
+    # 分割，五个一组
+    for i in range(0, len(string), 5):
+        lists.append(string[i:i+5])
+    # print(lists)
+    # 循环匹配，得到下标，对应下标即可
+    for i in range(0, len(lists)):
+        for j in range(0, 26):
+            if lists[i] == cipher2[j]:
+                # print(j)
+                print(letters2[j], end="")
+    print("")
+
+
+bacon2("AABABABABAAAAAAAABBAABAAABAABAAABABABAAAABAABAABABABAABABAABB")
