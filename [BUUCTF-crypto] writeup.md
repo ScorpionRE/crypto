@@ -10,15 +10,14 @@
 
 #### 费马定理
 
+![a^{{\varphi (n)}}\equiv 1{\pmod  n}](https://wikimedia.org/api/rest_v1/media/math/render/svg/2e818f3f88d3e71e569f171dd86f31e1903fdc55)
 $$
 m^{p-1} = 1 mod p (p为素数)
 $$
 
+#### 欧拉函数
 
-
-#### 欧拉公式
-
-
+![image-20211204192438892]([BUUCTF-crypto] writeup.assets/image-20211204192438892.png)
 
 #### 欧几里得算法
 
@@ -170,6 +169,12 @@ print(flag)
 
 
 ## 现代
+
+
+
+## 
+
+## 块密码
 
 ### [ACTF新生赛2020]crypto-aes
 
@@ -430,6 +435,220 @@ m^14 = (m^2)^7 mod (q1*q2)
 #### [NPUCTF2020]认清形势，建立信心【选择明文攻击】
 
 ![image-20211128152817403]([BUUCTF-crypto] writeup.assets/image-20211128152817403.png)
+
+
+
+#### [NPUCTF2020]共模攻击 【coppersmith]
+
+Coppersmith定理的内容为：在一个e阶的mod n多项式f(x)中，如果有一个根小于n^1/e，就可以运用一个O(log n)的算法求出这些根
+
+task中我们可以获取的信息有：
+
+　　
+$$
+c1 = m^p\ mod\ n = m^p\ mod \ p*q
+$$
+　
+$$
+c2 = m^q\ mod\ n = m^q\ mod\ p*q
+$$
+因为p、q为素数，所以由费马定理可得：
+
+　
+$$
+m^p ≡ m\ mod\ p
+$$
+　　
+$$
+m^q ≡ m\ mod\ q
+$$
+所以，又有：
+
+　　c1 = m + ip + xpq，可整理成 c1 = m + ip 
+
+　　c2 = m + jq + ypq，可整理成 c2 = m + jq
+
+因此：
+
+　　c1 * c2 = m2 + (ip + jq)m + ijn
+
+　　(c1 + c2)m = 2m2 + (ip+jq)m 
+
+　　有： m2 - (c1 + c2)m + c1 * c2 = ijn ≡ 0 mod n
+
+最终的任务就是求m的值。
+
+```python
+n=128205304743751985889679351195836799434324346996129753896234917982647254577214018524580290192396070591032007818847697193260130051396080104704981594190602854241936777324431673564677900773992273463534717009587530152480725448774018550562603894883079711995434332008363470321069097619786793617099517770260029108149
+c1=96860654235275202217368130195089839608037558388884522737500611121271571335123981588807994043800468529002147570655597610639680977780779494880330669466389788497046710319213376228391138021976388925171307760030058456934898771589435836261317283743951614505136840364638706914424433566782044926111639955612412134198
+c2=9566853166416448316408476072940703716510748416699965603380497338943730666656667456274146023583837768495637484138572090891246105018219222267465595710692705776272469703739932909158740030049375350999465338363044226512016686534246611049299981674236577960786526527933966681954486377462298197949323271904405241585
+
+PR.<m> = PolynomialRing(Zmod(n))
+#Zmod(n):指定模，定义界限为n的环；Z表示整数；指定模是划定这个环的界限，就是有效的数字只有从0到n，其他的都通过与n取模来保证在0～n这个范围内；Zmod代表这是一个整数域中的n模环
+#ZZ：整数环；QQ：有理数环；RR：实数环；CC：复数环
+#PR：只是一个指针，指向用polynomialring指定的那个环（可以使用任意字符）
+#PolynomialRing：这个就是说建立多项式环
+#.<m>：指定一个变量的意思（可以用任意字符）
+f = m^2-(c1+c2)*m+c1*c2
+x0 = f.small_roots(X=2^400)
+#x的绝对边界，因为m<400bits，所以设为2^400
+print(x0)
+```
+
+https://xz.aliyun.com/t/6813
+
+coppersmith攻击总结https://www.ruanx.net/coppersmith/
+
+#### [QCTF2018]Xman-RSA
+
+查看encryption.encrypted，看代码应该是作了一个简单的替换加密，使用quipquip进行频率分析，还原出代码（其中大写的T没有作替换）
+
+```python
+from gmpy2 import is_prime 
+from os import urandom 
+import base64 
+def bytes_to_num(b): 
+	return int(b.encode('hex'), 16) 
+
+def num_to_bytes(n): 
+	b = hex(n)[2:-1] 
+	b = '0' + b if len(b)%2 == 1 else b 
+	return b.decode('hex') 
+
+def get_a_prime(l): 
+	random_seed = urandom(l) 
+	num = bytes_to_num(random_seed) 
+	while True: 
+		if is_prime(num): 
+			break 
+		num+=1 
+	return num 
+
+def encrypt(s, e, n): 
+	p = bytes_to_num(s) 
+	p = pow(p, e, n) 
+	return num_to_bytes(p).encode('hex') 
+
+def separate(n): 
+	p = n % 4 
+	t = (p*p) % 4 
+	return t == 1 
+
+f = open('flag.txt', 'r') 
+flag = f.read() 
+
+msg1 = "" 
+msg2 = "" 
+for i in range(len(flag)): 
+	if separate(i): 
+		msg2 += flag[i] 
+	else: 
+		msg1 += flag[i]
+
+p1 = get_a_prime(128) 
+p2 = get_a_prime(128) 
+p3 = get_a_prime(128) 
+n1 = p1*p2 
+n2 = p1*p3 
+e = 0x1001 
+c1 = encrypt(msg1, e, n1) 
+c2 = encrypt(msg2, e, n2) 
+print(c1) 
+print(c2) 
+e1 = 0x1001 
+e2 = 0x101 
+p4 = get_a_prime(128) 
+p5 = get_a_prime(128) 
+n3 = p4*p5 
+c1 = num_to_bytes(pow(n1, e1, n3)).encode('hex') 
+c2 = num_to_bytes(pow(n1, e2, n3)).encode('hex') 
+print(c1) 
+print(c2) 
+print(base64.b64encode(num_to_bytes(n2))) 
+print(base64.b64encode(num_to_bytes(n3)))
+```
+
+进一步分析文件，n1中的应该是59、60行中的c1、c2，ciphertext是上面真正和flag有关的的c1、c2，最后是n2和n3
+
+先求得n2和n3的值
+
+```python
+n2 = "PVNHb2BfGAnmxLrbKhgsYXRwWIL9eOj6K0s3I0slKHCTXTAUtZh3T0r+RoSlhpO3+77AY8P7WETYz2Jzuv5FV/mMODoFrM5fMyQsNt90VynR6J3Jv+fnPJPsm2hJ1Fqt7EKaVRwCbt6a4BdcRoHJsYN/+eh7k/X+FL5XM7viyvQxyFawQrhSV79FIoX6xfjtGW+uAeVF7DScRcl49dlwODhFD7SeLqzoYDJPIQS+VSb3YtvrDgdV+EhuS1bfWvkkXRijlJEpLrgWYmMdfsYX8u/+Ylf5xcBGn3hv1YhQrBCg77AHuUF2w/gJ/ADHFiMcH3ux3nqOsuwnbGSr7jA6Cw=="
+n3 = "TmNVbWUhCXR1od3gBpM+HGMKK/4ErfIKITxomQ/QmNCZlzmmsNyPXQBiMEeUB8udO7lWjQTYGjD6k21xjThHTNDG4z6C2cNNPz73VIaNTGz0hrh6CmqDowFbyrk+rv53QSkVKPa8EZnFKwGz9B3zXimm1D+01cov7V/ZDfrHrEjsDkgK4ZlrQxPpZAPl+yqGlRK8soBKhY/PF3/GjbquRYeYKbagpUmWOhLnF4/+DP33ve/EpaSAPirZXzf8hyatL4/5tAZ0uNq9W6T4GoMG+N7aS2GeyUA2sLJMHymW4cFK5l5kUvjslRdXOHTmz5eHxqIV6TmSBQRgovUijlNamQ=="
+n2 = bytes_to_long(base64.b64decode(n2))
+n3 = bytes_to_long(base64.b64decode(n3))
+print(n2)
+print(n3)
+```
+
+然后共模攻击，求得n1的值
+
+```python
+c1 = "2639c28e3609a4a8c953cca9c326e8e062756305ae8aee6efcd346458aade3ee8c2106ab9dfe5f470804f366af738aa493fd2dc26cb249a922e121287f3eddec0ed8dea89747dc57aed7cd2089d75c23a69bf601f490a64f73f6a583081ae3a7ed52238c13a95d3322065adba9053ee5b12f1de1873dbad9fbf4a50a2f58088df0fddfe2ed8ca1118c81268c8c0fd5572494276f4e48b5eb424f116e6f5e9d66da1b6b3a8f102539b690c1636e82906a46f3c5434d5b04ed7938861f8d453908970eccef07bf13f723d6fdd26a61be8b9462d0ddfbedc91886df194ea022e56c1780aa6c76b9f1c7d5ea743dc75cec3c805324e90ea577fa396a1effdafa3090"
+c2 = "42ff1157363d9cd10da64eb4382b6457ebb740dbef40ade9b24a174d0145adaa0115d86aa2fc2a41257f2b62486eaebb655925dac78dd8d13ab405aef5b8b8f9830094c712193500db49fb801e1368c73f88f6d8533c99c8e7259f8b9d1c926c47215ed327114f235ba8c873af7a0052aa2d32c52880db55c5615e5a1793b690c37efdd5e503f717bb8de716303e4d6c4116f62d81be852c5d36ef282a958d8c82cf3b458dcc8191dcc7b490f227d1562b1d57fbcf7bf4b78a5d90cd385fd79c8ca4688e7d62b3204aeaf9692ba4d4e44875eaa63642775846434f9ce51d138ca702d907849823b1e86896e4ea6223f93fae68b026cfe5fa5a665569a9e3948a"
+c1 = codecs.decode(c1,'hex')
+c1 = bytes_to_long(c1)
+c2 = bytes_to_long(codecs.decode(c2,'hex'))
+e1 = 0x1001
+e2 = 0x101
+n = n3
+gcd,s,t = gmpy2.gcdext(e1,e2)
+if s < 0:
+    s = -s
+    c1 = gmpy2.invert(c1,n)
+if t < 0:
+    t = -t
+    c2 = gmpy2.invert(c2,n)
+
+M = gmpy2.powmod(c1,s,n)*gmpy2.powmod(c2,t,n) % n
+print(M)
+n1 = M
+```
+
+最后求解得到msg1，msg2。再分析separate函数，发现只是交错分割flag
+
+所以还原即可。
+
+注意字节码需要decode()转换为字符串。
+
+给到的函数num_to_bytes不知道为什么可能有一点小问题，最后需要改用long_to_bytes
+
+```python
+p = gmpy2.gcd(n1,n2)
+
+
+def decrypt(c,e,n):
+    c = bytes_to_num(codecs.decode(c,'hex'))
+    q = divmod(n,p)[0]
+    phi_n = (p-1)*(q-1)
+    d = gmpy2.invert(e,phi_n)
+    m = pow(c,d,n)
+
+    return long_to_bytes(m)
+
+
+c1 = "1240198b148089290e375b999569f0d53c32d356b2e95f5acee070f016b3bef243d0b5e46d9ad7aa7dfe2f21bda920d0ac7ce7b1e48f22b2de410c6f391ce7c4347c65ffc9704ecb3068005e9f35cbbb7b27e0f7a18f4f42ae572d77aaa3ee189418d6a07bab7d93beaa365c98349d8599eb68d21313795f380f05f5b3dfdc6272635ede1f83d308c0fdb2baf444b9ee138132d0d532c3c7e60efb25b9bf9cb62dba9833aa3706344229bd6045f0877661a073b6deef2763452d0ad7ab3404ba494b93fd6dfdf4c28e4fe83a72884a99ddf15ca030ace978f2da87b79b4f504f1d15b5b96c654f6cd5179b72ed5f84d3a16a8f0d5bf6774e7fd98d27bf3c9839"
+c2 = "129d5d4ab3f9e8017d4e6761702467bbeb1b884b6c4f8ff397d078a8c41186a3d52977fa2307d5b6a0ad01fedfc3ba7b70f776ba3790a43444fb954e5afd64b1a3abeb6507cf70a5eb44678a886adf81cb4848a35afb4db7cd7818f566c7e6e2911f5ababdbdd2d4ff9825827e58d48d5466e021a64599b3e867840c07e29582961f81643df07f678a61a9f9027ebd34094e272dfbdc4619fa0ac60f0189af785df77e7ec784e086cf692a7bf7113a7fb8446a65efa8b431c6f72c14bcfa49c9b491fb1d87f2570059e0f13166a85bb555b40549f45f04bc5dbd09d8b858a5382be6497d88197ffb86381085756365bd757ec3cdfa8a77ba1728ec2de596c5ab"
+e = 0x1001
+msg1 = decrypt(c1,e,n1).decode()
+msg2 = decrypt(c2,e,n2).decode()
+
+print()
+
+flag = ""
+len = len(msg2) + len(msg1)
+tmp1 = 0
+tmp2 = 0
+for i in range(len//2):
+    flag += str(msg1[tmp1])
+    flag += str(msg2[tmp2])
+    tmp1+=1
+    tmp2+=1
+
+print(flag)
+```
+
+#### [羊城杯 2020]RRRRRRRSA 【wiener attack】
 
 
 
