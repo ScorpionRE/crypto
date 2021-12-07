@@ -4,6 +4,7 @@ import codecs
 import linecache
 
 import libnum
+import rsa
 from Crypto.Cipher import PKCS1_OAEP
 
 from Crypto.Util.number import *
@@ -323,6 +324,10 @@ print(hex(M))
 # flag = key.decrypt(c)
 # print(flag)
 
-
+#解密文件，不知道为什么可能某种方法无法使用
+# Rsa=rsa.PrivateKey(int(n1), int(e1), int(d1), int(p), int(q1))
+# with open('flag_encry1','rb') as f:
+#      cipher1=f.read()
+#      print(rsa.decrypt(cipher1, Rsa))
 
 
