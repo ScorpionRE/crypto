@@ -216,6 +216,22 @@ flag = aes.decrypt(enc_flag)
 print(flag)
 ```
 
+### [AFCTF2018]MyOwnCBC【AES-CBC】
+
+加密过程是用上一级的密文，作为下一次加密的密钥key,所以初始密钥key可以知道就是题目给的密文前32个
+
+
+
+### [ACTF新生赛2020]crypto-des
+
+c语言中数据在内存中的存储（大小端）
+
+
+
+
+
+有轮密钥，直接解密即可
+
 
 
 ### [AFCTF2018]你听过一次一密么？
@@ -231,6 +247,12 @@ https://www.ruanx.net/many-time-pad/
 
 
 **修复语句太绝了**
+
+
+
+### ？[SUCTF2019]MT【移位】
+
+https://blog.csdn.net/m0_49109277/article/details/117324488
 
 
 
@@ -649,6 +671,16 @@ print(flag)
 ```
 
 #### [羊城杯 2020]RRRRRRRSA 【wiener attack】
+
+连分数攻击？
+
+
+
+
+
+#### ！[watevrCTF 2019]Swedish RSA【多项式】
+
+https://blog.csdn.net/MikeCoke/article/details/113800879
 
 
 
