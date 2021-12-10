@@ -166,6 +166,12 @@ for i in range(0, len(s),2):
 print(flag)
 ```
 
+### [XNUCA2018]baby_crypto【重合指数、词频分析】
+
+
+
+**爆破密钥长度**
+
 
 
 ## 现代
@@ -683,6 +689,19 @@ print(flag)
 https://blog.csdn.net/MikeCoke/article/details/113800879
 
 
+
+#### [NCTF2019]easyrsa【
+
+$$
+m^e \equiv c \quad (\text{mod}\ n)
+$$
+
+$$
+\begin{aligned}
+m^e &\equiv c \quad (\text{mod}\ p)\newline
+m^e &\equiv c \quad (\text{mod}\ q)
+\end{aligned}
+$$
 
 ## ELgamal
 

@@ -247,74 +247,97 @@ m,k
 #     flag+=string.ascii_letters[(x2[0]*string.ascii_letters.index(s[i])+x2[1]*string.ascii_letters.index(s[i+1]))%26]
 # print(flag)
 
+#培根密码
+# letters1 = [
+#     'A', 'B', 'C', 'D', 'E', 'F', 'G',
+#     'H', 'I', 'J', 'K', 'L', 'M', 'N',
+#     'O', 'P', 'Q', 'R', 'S', 'T',
+#     'U', 'V', 'W', 'X', 'Y', 'Z',
+# ]
+# letters2 = [
+#     'a', 'b', 'c', 'd', 'e', 'f', 'g',
+#     'h', 'i', 'j', 'k', 'l', 'm', 'n',
+#     'o', 'p', 'q', 'r', 's', 't',
+#     'u', 'v', 'w', 'x', 'y', 'z',
+# ]
+# cipher1 = [
+#     "aaaaa", "aaaab", "aaaba", "aaabb", "aabaa", "aabab", "aabba",
+#     "aabbb", "abaaa", "abaab", "ababa", "ababb", "abbaa", "abbab",
+#     "abbba", "abbbb", "baaaa", "baaab", "baaba", "baabb",
+#     "babaa", "babab", "babba", "babbb", "bbaaa", "bbaab",
+# ]
+# cipher2 = [
+#     "AAAAA", "AAAAB", "AAABA", "AAABB", "AABAA", "AABAB", "AABBA",
+#     "AABBB", "ABAAA", "ABAAA", "ABAAB", "ABABA", "ABABB", "ABBAA",
+#     "ABBAB", "ABBBA", "ABBBB", "BAAAA", "BAAAB", "BAABA",
+#     "BAABB", "BAABB", "BABAA", "BABAB", "BABBA", "BABBB",
+# ]
+#
+#
+# def bacon1(string):
+#     lists = []
+#     # 分割，五个一组
+#     for i in range(0, len(string), 5):
+#         lists.append(string[i:i+5])
+#     # print(lists)
+#     # 循环匹配，得到下标，对应下标即可
+#     for i in range(0, len(lists)):
+#         for j in range(0, 26):
+#             if lists[i] == cipher1[j]:
+#                 # print(j)
+#                 print(letters1[j], end="")
+#     print("")
+#
+#
+# def bacon2(string):
+#     lists = []
+#     # 分割，五个一组
+#     for i in range(0, len(string), 5):
+#         lists.append(string[i:i+5])
+#     # print(lists)
+#     # 循环匹配，得到下标，对应下标即可
+#     for i in range(0, len(lists)):
+#         for j in range(0, 26):
+#             if lists[i] == cipher2[j]:
+#                 # print(j)
+#                 print(letters2[j], end="")
+#     print("")
+#
+#
+# bacon2("AABABABABAAAAAAAABBAABAAABAABAAABABABAAAABAABAABABABAABABAABB")
 
-letters1 = [
-    'A', 'B', 'C', 'D', 'E', 'F', 'G',
-    'H', 'I', 'J', 'K', 'L', 'M', 'N',
-    'O', 'P', 'Q', 'R', 'S', 'T',
-    'U', 'V', 'W', 'X', 'Y', 'Z',
-]
-letters2 = [
-    'a', 'b', 'c', 'd', 'e', 'f', 'g',
-    'h', 'i', 'j', 'k', 'l', 'm', 'n',
-    'o', 'p', 'q', 'r', 's', 't',
-    'u', 'v', 'w', 'x', 'y', 'z',
-]
-cipher1 = [
-    "aaaaa", "aaaab", "aaaba", "aaabb", "aabaa", "aabab", "aabba",
-    "aabbb", "abaaa", "abaab", "ababa", "ababb", "abbaa", "abbab",
-    "abbba", "abbbb", "baaaa", "baaab", "baaba", "baabb",
-    "babaa", "babab", "babba", "babbb", "bbaaa", "bbaab",
-]
-cipher2 = [
-    "AAAAA", "AAAAB", "AAABA", "AAABB", "AABAA", "AABAB", "AABBA",
-    "AABBB", "ABAAA", "ABAAA", "ABAAB", "ABABA", "ABABB", "ABBAA",
-    "ABBAB", "ABBBA", "ABBBB", "BAAAA", "BAAAB", "BAABA",
-    "BAABB", "BAABB", "BABAA", "BABAB", "BABBA", "BABBB",
-]
 
-
-def bacon1(string):
-    lists = []
-    # 分割，五个一组
-    for i in range(0, len(string), 5):
-        lists.append(string[i:i+5])
-    # print(lists)
-    # 循环匹配，得到下标，对应下标即可
-    for i in range(0, len(lists)):
-        for j in range(0, 26):
-            if lists[i] == cipher1[j]:
-                # print(j)
-                print(letters1[j], end="")
-    print("")
-
-
-def bacon2(string):
-    lists = []
-    # 分割，五个一组
-    for i in range(0, len(string), 5):
-        lists.append(string[i:i+5])
-    # print(lists)
-    # 循环匹配，得到下标，对应下标即可
-    for i in range(0, len(lists)):
-        for j in range(0, 26):
-            if lists[i] == cipher2[j]:
-                # print(j)
-                print(letters2[j], end="")
-    print("")
-
-
-bacon2("AABABABABAAAAAAAABBAABAAABAABAAABABABAAAABAABAABABABAABABAABB")
 #猪圈变式，左右字母表相对应替换
-if __name__ == '__main__':
-    dic = {'a': 'j', 'b': 'k', 'c': 'l', 'd': 'm', 'e': 'n', 'f': 'o', 'g': 'p', 'h': 'q', 'i': 'r', 's': 'w', 'v': 'z',
-           't': 'x', 'u': 'y', 'j': 'a', 'k': 'b', 'l': 'c', 'm': 'd', 'n': 'e', 'o': 'f', 'p': 'g', 'q': 'h', 'r': 'i',
-           'w': 's', 'z': 'v', 'x': 't', 'y': 'u'}
-    crypto = 'ocjp{zkirjwmo-ollj-nmlw-joxi-tmolnrnotvms}'
-    plaintext = ''
-    for c in crypto:
-        if c in dic:
-            plaintext += dic[c]
-        else:
-            plaintext += c
-    print(plaintext)
+# if __name__ == '__main__':
+#     dic = {'a': 'j', 'b': 'k', 'c': 'l', 'd': 'm', 'e': 'n', 'f': 'o', 'g': 'p', 'h': 'q', 'i': 'r', 's': 'w', 'v': 'z',
+#            't': 'x', 'u': 'y', 'j': 'a', 'k': 'b', 'l': 'c', 'm': 'd', 'n': 'e', 'o': 'f', 'p': 'g', 'q': 'h', 'r': 'i',
+#            'w': 's', 'z': 'v', 'x': 't', 'y': 'u'}
+#     crypto = 'ocjp{zkirjwmo-ollj-nmlw-joxi-tmolnrnotvms}'
+#     plaintext = ''
+#     for c in crypto:
+#         if c in dic:
+#             plaintext += dic[c]
+#         else:
+#             plaintext += c
+#     print(plaintext)
+
+#词频分析
+#爆破密钥长度
+    #找子串（长度3-4），爆破，（应该还有别的找最大字串算法）
+cipher = ""
+sub_str = []
+for i in range(26):
+    sub_str[0] = chr(ord('a')+i)
+    for j in range(26):
+        sub_str[1] = chr(ord('a')+j)
+        for k in range(26):
+            sub_str[2] = chr(ord('a') + k)
+            for l in range(26):
+                sub_str[3] = chr(ord('a')+l)
+                if cipher.count("".join(sub_str)) > 20:
+                    key = sub_str
+                    print(key)
+                    break
+    #找第i次出现的位置（下标j）
+def get_position(s,sub_s,i):
+    
