@@ -324,20 +324,20 @@ m,k
 #词频分析
 #爆破密钥长度
     #找子串（长度3-4），爆破，（应该还有别的找最大字串算法）
-cipher = ""
-sub_str = []
-for i in range(26):
-    sub_str[0] = chr(ord('a')+i)
-    for j in range(26):
-        sub_str[1] = chr(ord('a')+j)
-        for k in range(26):
-            sub_str[2] = chr(ord('a') + k)
-            for l in range(26):
-                sub_str[3] = chr(ord('a')+l)
-                if cipher.count("".join(sub_str)) > 20:
-                    key = sub_str
-                    print(key)
-                    break
-    #找第i次出现的位置（下标j）
-def get_position(s,sub_s,i):
-    
+# cipher = ""
+# sub_str = []
+# for i in range(26):
+#     sub_str[0] = chr(ord('a')+i)
+#     for j in range(26):
+#         sub_str[1] = chr(ord('a')+j)
+#         for k in range(26):
+#             sub_str[2] = chr(ord('a') + k)
+#             for l in range(26):
+#                 sub_str[3] = chr(ord('a')+l)
+#                 if cipher.count("".join(sub_str)) > 20:
+#                     key = sub_str
+#                     print(key)
+#                     break
+#     #找第i次出现的位置（下标j）
+# def get_position(s,sub_s,i):
+

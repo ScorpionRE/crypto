@@ -472,21 +472,21 @@ Coppersmith定理的内容为：在一个e阶的mod n多项式f(x)中，如果�
 
 task中我们可以获取的信息有：
 
-　　
+
 $$
 c1 = m^p\ mod\ n = m^p\ mod \ p*q
 $$
-　
+
 $$
 c2 = m^q\ mod\ n = m^q\ mod\ p*q
 $$
 因为p、q为素数，所以由费马定理可得：
 
-　
+
 $$
 m^p ≡ m\ mod\ p
 $$
-　　
+
 $$
 m^q ≡ m\ mod\ q
 $$
@@ -690,7 +690,61 @@ https://blog.csdn.net/MikeCoke/article/details/113800879
 
 
 
-#### [NCTF2019]easyrsa【
+#### [美团CTF]hambersa 【PP】
+
+x, y = len(str§), len(str(q))
+P = 10^x * p + p
+Q = 10^y * q + q
+同理
+PP = 10^x’ * P + Q
+QQ = 10^y’ * Q + P
+
+N = 10^(x+x'+y+y')pq+...+pq
+
+
+
+sage代码
+
+```python
+from Crypto.Util.number import *
+from tqdm import tqdm
+
+def decrypt_RSA(c, e, p, q):
+    phi = (p-1) * (q-1)
+    d = inverse(e, phi)
+    m = pow(c, d, p*q)
+    print(long_to_bytes(m))
+
+n = 177269125756508652546242326065138402971542751112423326033880862868822164234452280738170245589798474033047460920552550018968571267978283756742722231922451193
+c = 47718022601324543399078395957095083753201631332808949406927091589044837556469300807728484035581447960954603540348152501053100067139486887367207461593404096
+
+
+low = str(n)[-18:]
+high = str(n)[:18]
+pq_prob = []
+
+for i in range(10):
+    for j in range(10):
+        for k in range(10):
+            pq_prob.append(int(high + str(i) + str(j)+ str(k) + low))
+
+for x in tqdm(pq_prob):
+    f = factor(x)
+    if (len(f) == 2 and f[0][0].nbits() == 64):
+        p, q = f[0][0], f[1][0]
+        break
+
+P = int(str(p) + str(p))
+print(P)
+Q = int(str(q) + str(q))
+PP = int(str(P) + str(Q))
+QQ = int(str(Q) + str(P))
+N = PP * QQ
+print(N == n)
+decrypt_RSA(c, 65537, PP, QQ)```
+```
+
+#### [NCTF2019]easyrsa【e，phi不互素】
 
 $$
 m^e \equiv c \quad (\text{mod}\ n)
@@ -702,6 +756,10 @@ m^e &\equiv c \quad (\text{mod}\ p)\newline
 m^e &\equiv c \quad (\text{mod}\ q)
 \end{aligned}
 $$
+
+
+
+
 
 ## ELgamal
 
