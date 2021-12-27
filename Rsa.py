@@ -4,6 +4,7 @@ import codecs
 import linecache
 
 import libnum
+import owiener
 import rsa
 from Crypto.Cipher import PKCS1_OAEP
 
@@ -283,6 +284,55 @@ c = 1938400235872575967919891768676331034905098822362762509605080036976048423755
 # #离散对数求e
 # e = 808723997
 # c = 169169912654178
+
+
+#wiener attack 连分数攻击
+#求渐进分数
+N1 = 1628
+N2 = 321
+#求连分数的项
+def continuedfra(x,y):
+    cf = []
+    while y:
+        cf += [x//y]
+        x,y = y,x%y
+    return cf
+#得到分子和分母
+def simplify(c):
+    numrator = 0 #分子
+    denominator = 1 #分母
+    for x in c[::-1]: #倒序遍历？
+        numrator,denominator = denominator,x * denominator + numrator
+    return (numrator,denominator) #连分数生成分子和算出来的分母？
+
+def getit(c):
+    cf = []
+    for i in range(len(c)):
+        cf.append(simplify(c[:i]))
+    return cf
+
+def wiener(e,n):
+    cf = []
+    for (Q2,Q1) in getit(cf):
+        if Q1 == 0:
+            continue
+        if N1%Q1 == 0 and Q1 != 1:
+            return Q1
+    print("not found")
+    return 0
+Q1 = wiener(N1,N2)
+
+
+
+#wiener attack (owiener库
+e = 65537
+n = 135789019
+d = owiener.attack(e, n)
+
+if d is None:
+    print("Failed")
+else:
+    print("Hacked d={}".format(d))
 
 #计算d
 #print(gmpy2.lcm(p-1,q-1))   #最小公倍数

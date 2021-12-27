@@ -2,6 +2,51 @@
 
 ## 数学知识
 
+## 
+
+### 连分数
+
+数x表示为如下形式
+
+![image-20211220201601164]([BUUCTF-crypto] writeup.assets/image-20211220201601164.png)
+
+可以
+$$
+x=[a 
+0
+​
+ ,a 
+1
+​
+ ,a 
+2
+​
+ ,a 
+3
+​
+ ,…,a 
+n
+​
+ ]
+$$
+例子：
+
+![image-20211220202843285]([BUUCTF-crypto] writeup.assets/image-20211220202843285.png)
+
+```python
+        def continuedfra(x,y):
+            cf = []
+            while y:
+                cf += [x//y]
+                x,y = y,x%y
+            return cf
+
+        n = continuedfra(73,95)
+        print(n)
+```
+
+
+
 ### 离散对数
 
 
@@ -228,6 +273,8 @@ print(flag)
 
 
 
+### [美团CTF]
+
 ### [ACTF新生赛2020]crypto-des
 
 c语言中数据在内存中的存储（大小端）
@@ -253,6 +300,20 @@ https://www.ruanx.net/many-time-pad/
 
 
 **修复语句太绝了**
+
+
+
+### ？[De1CTF2019]xorz 【MTP/汉明距离+频率分析/break repeating-key】
+
+**break repeating-key**
+
+http://socold.cn/index.php/archives/65/
+
+汉明距离：汉明距离就是一组二进制数据变成另一组数据所需的步骤数。对两组二进制数据进行异或运算，并统计结果为1的个数，那么这个数就是汉明距
+
+
+
+
 
 
 
@@ -678,7 +739,73 @@ print(flag)
 
 #### [羊城杯 2020]RRRRRRRSA 【wiener attack】
 
-连分数攻击？
+wiener attack：依靠连分数进行攻击，适用于非常接近某一值（如1）时，求一个比例关系，通过该比例关系再反推关键信息。
+
+适用于解密指数d很小，满足以下条件
+$$
+d < 1/3\ * N^{1/4}
+\\
+q < p < 2q
+$$
+一般用法：根据
+$$
+ed\ mod\ phi(n) = 1
+$$
+得到
+
+$$
+e*d = 1 + k*phi(n) \\
+即\ e/phi(n) = k/d + 1/d*phi(n)
+\\ 而\ phi(n)接近于n 
+\\ e/n - k/d = 1/d*phi(n)
+\\ e/n 与 k/d非常接近
+\\ 
+$$
+而e/N又是已知的,因此对e/N进行连分数展开，得到的一串分数的分母很有可能就是d，只要检验一下 ed mod phi(n) 看它是不是1就知道对不对了。
+
+
+
+本题特殊之处：e与N并没有近到相除约为1的地步，相差还是很大的，也就是说解密指数d也许还是很大的，这样就解不出来。但是N1和N2的关系却适合。
+$$
+N1/N2=(p1/p2)^2\ * (q1/q2)
+$$
+显然我们可以知道的是N1/N2 <Q1/Q2，所以在Q1/Q2在区间(N1/N2,1)之间，尝试对N1/N2进行连分数展开并求其各项渐进分数，其中某个连分数的分母可能就是Q1（这个可以依靠N%Q来验证）
+
+```python
+        N1 =
+        N2 =
+        #求连分数的项
+        def continuedfra(x,y):
+            cf = []
+            while y:
+                cf += [x//y]
+                x,y = y,x%y
+            return cf
+        #得到分子和分母
+        def simplify(c):
+            numrator = 0 #分子
+            denominator = 1 #分母
+            for x in c[::-1]: #倒序遍历？
+                numrator,denominator = denominator,x * denominator + numrator
+            return (numrator,denominator) #连分数生成分子和算出来的分母？
+
+        def getit(c):
+            cf = []
+            for i in range(len(c)):
+                cf.append(simplify(c[:i]))
+            return cf
+
+        def wiener(e,n):
+            cf = []
+            for (Q2,Q1) in getit(cf):
+                if Q1 == 0:
+                    continue
+                if N1%Q1 == 0 and Q1 != 1:
+                    return Q1
+            print("not found")
+            return 0
+        Q1 = wiener(N1,N2)
+```
 
 
 
