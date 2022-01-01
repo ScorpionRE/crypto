@@ -35,3 +35,5 @@ from Crypto.Util.number import *
 #     flag = DES.decrypt(k)
 #     print(flag.decode())
 #     print(flag)
+
+#lfsr
