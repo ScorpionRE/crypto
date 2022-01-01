@@ -219,11 +219,7 @@ print(flag)
 
 
 
-## 现代
 
-
-
-## 
 
 ## 块密码
 
@@ -275,6 +271,8 @@ print(flag)
 
 ### [美团CTF]
 
+
+
 ### [ACTF新生赛2020]crypto-des
 
 c语言中数据在内存中的存储（大小端）
@@ -287,7 +285,7 @@ c语言中数据在内存中的存储（大小端）
 
 
 
-### [AFCTF2018]你听过一次一密么？
+### ?[AFCTF2018]你听过一次一密么？
 
 一次一密（One-Time-Pad）：xor key  明文多长，密文就多长（适合少量明文消息）
 
@@ -315,7 +313,7 @@ http://socold.cn/index.php/archives/65/
 
 
 
-
+## 流密码
 
 ### ？[SUCTF2019]MT【移位】
 
@@ -323,13 +321,19 @@ https://blog.csdn.net/m0_49109277/article/details/117324488
 
 
 
-### 秘密共享的门限方案
+### [AFCTF2018]tinylfsr
+
+
+
+
+
+## 秘密共享的门限方案
 
 秘密共享的思想是将秘密以适当的方式拆分，拆分后的每一个份额由不同的参与者管理，单个参与者无法恢复秘密信息，只有若干个参与者一同协作才能恢复秘密消息。更重要的是，当其中任何相应范围内参与者出问题时，秘密仍可以完整恢复。
 
 秘密共享是一种将秘密分割存储的密码技术，目的是阻止秘密过于集中，以达到分散风险和容忍入侵的目的，是信息安全和数据保密中的重要手段
 
-#### ？[AFCTF2018]花开藏宝地【bloom方案】
+### ？[AFCTF2018]花开藏宝地【bloom方案】
 
 https://webencrypt.org/secretsharing/#bloom
 
@@ -363,7 +367,7 @@ for i in flag:
 
 
 
-### RSA
+## RSA
 
 #### [HDCTF2019]together  【多文件共模攻击】
 
@@ -565,6 +569,7 @@ $$
 
 　　有： m2 - (c1 + c2)m + c1 * c2 = ijn ≡ 0 mod n
 
+最终的任务就是求m的值。
 
 ```python
 n=128205304743751985889679351195836799434324346996129753896234917982647254577214018524580290192396070591032007818847697193260130051396080104704981594190602854241936777324431673564677900773992273463534717009587530152480725448774018550562603894883079711995434332008363470321069097619786793617099517770260029108149
@@ -872,16 +877,92 @@ decrypt_RSA(c, 65537, PP, QQ)```
 
 #### [NCTF2019]easyrsa【e，phi不互素】
 
+然而本题则为`e`和`p-1`(或`q-1`)的最大公约数就是`e`本身，也就是说`e | p-1`，只有对`c`开`e`次方根才行。
+可以将同余方程
 $$
 m^e \equiv c \quad (\text{mod}\ n)
 $$
 
 $$
+化成\\ 
 \begin{aligned}
 m^e &\equiv c \quad (\text{mod}\ p)\newline
 m^e &\equiv c \quad (\text{mod}\ q)
 \end{aligned}
 $$
+
+然后分别在`GF(p)`和`GF(q)`上对`c`开`e=0x1337`次方根，再用`CRT`组合一下即可得到在`mod n`下的解
+
+
+
+
+
+
+
+#### [百度2021]time【p，q相近+随机数遍历】
+
+首先看到q是p的下一个素数，可以发现p，q非常相近，所以
+
+![image-20211228131817914]([BUUCTF-crypto] writeup.assets/image-20211228131817914.png)
+$$
+|p-q|很小\\
+（p+q)/2 与 \sqrt[2]{n}很接近\\
+从\sqrt[2]{n}开始直到找到一个x，使得x^2-n=y^2即可\\
+p = x-y \\
+q = x + y
+$$
+
+```python
+pp = gmpy2.iroot(n,2)[0]
+for x in range(pp+1,pp+3):
+    yy = pow(x,2)-n
+    if gmpy2.iroot(yy,2)[1]:
+        y = gmpy2.iroot(yy,2)[0]
+        p = (x-y)
+        q = x + y
+        print("p:",p)
+        print("q:",q)
+phi = (p-1)*(q-1)
+d = gmpy2.invert(e,phi)
+m = pow(c,d,n)
+print(m)
+print(long_to_bytes(m))
+
+```
+
+得到hint
+
+`localtime为time.struct_time(tm_year=2021, tm_mon=4, tm_mday=28, tm_hour=20, tm_min=42, tm_sec=6, tm_wday=2, tm_yday=118, tm_isdst=0)`
+
+`time()-a1 = 3.1603143215179443`
+
+randome.seed设置的种子相同的话，最后得到的随机数也相同，所以只需要进行遍历即可
+
+```python
+lt = time.mktime((2021,4,28,20,42,6,2,118,0))
+print(lt)
+a1 = 3.1603143215179443
+s = 0
+for i in range(3):
+    for j in range(100000):
+        random.seed(s)
+        x = random.getrandbits(2048)
+        s = int(lt) - i + j * 10 ** -5
+        if n % x == 0:
+            p = x
+            print(p)
+            q = n//p
+            phi = (p-1)*(q-1)
+            d = gmpy2.invert(e,phi)
+            m = pow(c,d,n)
+            print(long_to_bytes(m))
+            break
+        
+```
+
+
+
+#### [百度ichunqiu]whitegiveCMA【数论+共模】
 
 
 
