@@ -2,15 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7b72538f-e700-46a9-b36a-cf7130bfe9a2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Plain.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/[BUUCTF-crypto] writeup.assets/image-20211228131817914.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cipher.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/1.py" beforeDir="false" afterPath="$PROJECT_DIR$/1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2.py" beforeDir="false" afterPath="$PROJECT_DIR$/2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/[BUUCTF-crypto] writeup.md" beforeDir="false" afterPath="$PROJECT_DIR$/[BUUCTF-crypto] writeup.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/symmetric.py" beforeDir="false" afterPath="$PROJECT_DIR$/symmetric.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ti.py" beforeDir="false" afterPath="$PROJECT_DIR$/ti.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
