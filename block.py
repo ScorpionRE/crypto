@@ -36,4 +36,4 @@ from Crypto.Util.number import *
 #     print(flag.decode())
 #     print(flag)
 
-#lfsr
+
