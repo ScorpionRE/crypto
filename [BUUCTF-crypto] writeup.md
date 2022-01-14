@@ -301,27 +301,25 @@ https://www.ruanx.net/many-time-pad/
 
 
 
-### ？[De1CTF2019]xorz 【MTP/汉明距离+频率分析/break repeating-key】
+### ？[De1CTF2019]xorz 【频率分析/break repeating-key】
 
-https://www.anquanke.com/post/id/161171#h3-6
+**法一：流密码**
 
-**一：MTP**
+参考
 
-https://www.ruanx.net/many-time-pad/
-
-给的是 m[i]⊕k[i]⊕s[i], 其中 s 已知，故实际上我们拿到了 m[i]⊕k[i]. 在这里 k 是有周期的，且周期不超过38。如果知道了 k 的周期，那么用 Many-Time-Pad 就可以成功攻击。由于 `len(key)` 并不大，从大到小枚举 `len(key)`，肉眼判断是否为flag即可。最后发现 `len(key)=30` 是满足要求的。
-
-但是这种方法过于耗时费力
-
-
-
-
+https://www.anquanke.com/post/id/161171#h3-
 
 http://socold.cn/index.php/archives/65/
 
 #### 一.猜测密钥长度
 
 1.暴力破解：
+
+https://www.ruanx.net/many-time-pad/
+
+给的是 m[i]⊕k[i]⊕s[i], 其中 s 已知，故实际上我们拿到了 m[i]⊕k[i]. 在这里 k 是有周期的，且周期不超过38。如果知道了 k 的周期，那么用 Many-Time-Pad 就可以成功攻击。由于 `len(key)` 并不大，从大到小枚举 `len(key)`，肉眼判断是否为flag即可。最后发现 `len(key)=30` 是满足要求的。
+
+但是这种方法过于耗时费力
 
 2.汉明距离：一组二进制数据变成另一组数据所需的步骤数。对两组二进制数据进行异或运算，并统计结果为1的个数，那么这个数就是汉明距离。
 
@@ -358,7 +356,9 @@ http://socold.cn/index.php/archives/65/
 
 
 
+**词频分析**
 
+https://codeleading.com/article/68135872581/
 
 
 
@@ -370,7 +370,73 @@ https://blog.csdn.net/m0_49109277/article/details/117324488
 
 ### [AFCTF2018]tinylfsr
 
+根据给出的文件，发现两次文件加密
 
+- plain->cipher
+- flag->flag_encode
+
+查看encrypt.py，加密方式为
+
+- 前一部分：key与plain的前一部分xor
+- 后一部分：lfsr生成的密钥流与plain的后一部分xor
+
+进一步分析，可以发现key与mask位数是相同的，看了一下mask的位数是二进制64位，那么key的位数就是16进制16位，也就是8位ASCII字符.
+
+(不知道key长度的话，也可以遍历一下，再用该key对plain加密看是否与cipher相同)
+
+```python
+cip = open('cipher.txt', 'rb').read()
+msg = open('Plain.txt', 'rb').read()
+
+print(codecs.encode(strxor(cip, msg)[:8], 'hex'))
+```
+
+接下来可以生成lfsr的密钥流，再依次解密（R要初始化为key）
+
+```python
+key = '0123456789abcdef'
+R = int(key, 16)
+mask = 0b1101100000000000000000000000000000000000000000000000000000000000
+
+
+def lfsr(R, mask):
+    # 左移1位：保留末尾 63 位，在最后添加一个0
+    output = (R << 1) & 0xffffffffffffffff
+
+    # i：保留 R 的前 0、1、3、4位
+    i = (R & mask) & 0xffffffffffffffff
+
+    lastbit = 0
+    while i != 0:
+        lastbit ^= (i & 1)
+        i = i >> 1
+    # lastbit：统计 i 里面有多少个1, 奇数个则为1, 偶数个则为0
+
+    # output: R 左移1位，再添加 lastbit
+    output ^= lastbit
+    return (output, lastbit)
+
+
+cip = open('flag_encode.txt', 'rb').read()
+a = ''.join([chr(int(b, 16)) for b in [key[i:i + 2] for i in range(0, len(key), 2)]])
+
+ans = ""
+
+for i in range(len(a)):
+    ans += (chr((cip[i] ^ ord(a[i]))))
+
+lent = len(cip)
+
+for i in range(len(a), lent):
+    tmp = 0
+    for j in range(8):
+        (R, out) = lfsr(R, mask)
+        tmp = (tmp << 1) ^ out
+    ans += (chr(tmp ^ cip[i]))
+
+print(ans)
+
+```
 
 
 
