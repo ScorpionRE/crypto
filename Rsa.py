@@ -320,40 +320,48 @@ def wiener(e,n):
             return Q1
     print("not found")
     return 0
-Q1 = wiener(N1,N2)
+
+#Q1 = wiener(N1,N2)
 
 
 
 #wiener attack (owiener库
-e = 65537
-n = 135789019
-d = owiener.attack(e, n)
+def owienerk(e,n):
+    e = 65537
+    n = 135789019
+    d = owiener.attack(e, n)
 
-if d is None:
-    print("Failed")
-else:
-    print("Hacked d={}".format(d))
+    if d is None:
+        print("Failed")
+    else:
+        print("Hacked d={}".format(d))
 
-#计算d
-#print(gmpy2.lcm(p-1,q-1))   #最小公倍数
+#给出具有相关性的一些式子，变形，然后求公因式，得到p/q
+def g():
+    com = gmpy2.gcd()
+    return com
 
-phi_n = (p - 1) * (q - 1)
-#若无法直接求逆元d
-print(gmpy2.gcd(e,phi_n))
-d = gmpy2.invert(e, phi_n)
-print("d:"+ str(d))
 
 #根据c求m
-M = pow(c,d,p*q)
+def decrypt(e,c,d,n):
+    phi_n = (p - 1) * (q - 1)
+    #若无法直接求逆元d
+    #print(gmpy2.lcm(p - 1, q - 1))  # 最小公倍数
+    #print(gmpy2.gcd(e,phi_n))
+    d = gmpy2.invert(e, phi_n)
+    print("d:"+ str(d))
 
-#e不是素数，需要分解，变形后，m是之前的x次方
-#M = gmpy2.iroot(M,2)[0]
+    M = pow(c,d,n)
 
-print("十进制M："+ str(M))
-print(long_to_bytes(M))
-print(hex(M))
-#print(libnum.n2s(M))
+    #e不是素数，需要分解，变形后，m是之前的x次方
+    #M = gmpy2.iroot(M,2)[0]
 
+    print("十进制M："+ str(M))
+    print(long_to_bytes(M))
+    print(hex(M))
+    #print(libnum.n2s(M))
+
+    return M
 
 
 #从公钥文件中获取n、e的值
