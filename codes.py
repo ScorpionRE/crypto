@@ -2,9 +2,15 @@ import base64
 #十六进制转ASCII
 import codecs
 
-m = "024A447B4469664D616E63686573746572636F64657D"
-print(codecs.decode(m,'hex'))
+
 #base64
+def base64decode(res):
+    missing_padding = 4 - len(res) % 4
+    if missing_padding:
+        res += '=' * missing_padding
+    flag=base64.b64decode(res)
+    print(flag)
+    return flag
 # import base64
 # file = open("3.txt",'r')
 # file2 = open("flag",'w')
@@ -54,20 +60,16 @@ import codecs
 #替换base字母表
 
 
-dict= "JASGBWcQPRXEFLbCDIlmnHUVKTYZdMovwipatNOefghq56rs34ujkxyz012789+/="
-base64_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P','Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f','g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v','w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/']
-cipher='MyLkTaP3FaA7KOWjTmKkVjWjVzKjdeNvTnAjoH9iZOIvTeHbvD=='
-res=''
-for i in range(len(cipher)):
-    for j in range(64):
-        if(dict[j]==cipher[i]):
-            res+=base64_list[j]
-print(res)
-missing_padding = 4 - len(res) % 4
-if missing_padding:
-    res += '=' * missing_padding
-flag=base64.b64decode(res)
-print(flag)
+# dict= "JASGBWcQPRXEFLbCDIlmnHUVKTYZdMovwipatNOefghq56rs34ujkxyz012789+/="
+# base64_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P','Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f','g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v','w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/']
+# cipher='MyLkTaP3FaA7KOWjTmKkVjWjVzKjdeNvTnAjoH9iZOIvTeHbvD=='
+# res=''
+# for i in range(len(cipher)):
+#     for j in range(64):
+#         if(dict[j]==cipher[i]):
+#             res+=base64_list[j]
+# print(res)
+
 #b'BJD{D0_Y0u_kNoW_Th1s_b4se_map}'
 
 #hex to ascii

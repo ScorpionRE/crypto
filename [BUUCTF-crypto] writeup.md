@@ -68,6 +68,20 @@ $$
 
 ![image-20211204192438892]([BUUCTF-crypto] writeup.assets/image-20211204192438892-16419928116143.png)
 
+#### 欧拉准则
+
+给定非零n，奇素数p
+
+n有一个平方根（二次余数）当且仅当
+$$
+n^{p-1/2} = 1 (mod\ p)
+$$
+若n没有平方根
+$$
+n^{p-1/2} = -1 (mod\ p)
+$$
+
+
 #### 欧几里得算法
 
 
@@ -127,6 +141,30 @@ part-4，简单的积分，计算面积即可，再加36得520
 
 
 ## 古典
+
+### [INSHack2018]Crypt0r part 1【tcp流+简单替换】
+
+![image-20220118215319029]([BUUCTF-crypto] writeup.assets/image-20220118215319029.png)
+
+给出pcap文件
+
+使用wireshark打开，并分析tcp数据流
+
+![image-20220118215352072]([BUUCTF-crypto] writeup.assets/image-20220118215352072.png)
+
+quipquip直接频率分析得到的结果不太对，再仔细观察可能用到的为第二行中的
+
+```python
+def replacement(s,cipher):
+    # s为m中对应的字母
+    m = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    x = string.ascii_letters.maketrans(s, m)
+    print(cipher.translate(x))
+    
+s = 'PMSFADNIJKBXQCGYWETOVHRULZ'
+s += s.lower()
+replacement()
+```
 
 ### [UTCTF2020]basic-crypto
 
@@ -217,7 +255,7 @@ print(flag)
 
 ### [XNUCA2018]baby_crypto【重合指数、词频分析】
 
-
+题目:26个字母用0-25分别表示，有两串密钥，长度未知，然后一个用作乘数，一个用作加数对明文进行加密
 
 **爆破密钥长度**
 
@@ -928,7 +966,7 @@ $$
         Q1 = wiener(N1,N2)
 ```
 
-
+ 	
 
 
 
@@ -936,7 +974,7 @@ $$
 
 https://blog.csdn.net/MikeCoke/article/details/113800879
 
-
+多项式的欧拉函数：对于多项式P(y)来讲，欧拉函数phi(P(y))表示所有不高于P(y)幂级的环内所有多项式中，与P(y)无（除1以外）公因式的其他多项式的个数。
 
 #### [美团CTF]hambersa 【PP】
 
@@ -994,7 +1032,9 @@ decrypt_RSA(c, 65537, PP, QQ)```
 
 #### [NCTF2019]easyrsa【e，phi不互素】
 
-然而本题则为`e`和`p-1`(或`q-1`)的最大公约数就是`e`本身，也就是说`e | p-1`，只有对`c`开`e`次方根才行。
+http://yulige.top/?p=752#easyRSA909pt_2solvers
+
+然而本题则为`e`和`p-1`(或`q-1`)的最大公约数就是`e`本身，也就是说`e | p-1`，只有对`c`开`e`次方根才行，但是e很大，暴力计算所需时间很长。
 可以将同余方程
 $$
 m^e \equiv c \quad (\text{mod}\ n)
@@ -1013,6 +1053,97 @@ $$
 
 
 
+
+**有限域内开根： **
+
+e与p-1和q-1都不互素，不能简单求个逆元
+
+开平方根可以用 `Tonelli-Shanks`算法，可以扩展到开n次方根
+
+这篇[paper](https://arxiv.org/pdf/1111.4877.pdf) 里给出了具体的算法：`Adleman-Manders-Miller rth Root Extraction Method`
+
+![Adleman-Manders-Miller cubic root extraction method]([BUUCTF-crypto] writeup.assets/QNy9EWc7K4enJGu.jpg)
+
+[数学证明以后再看吧2333](https://jayxv.github.io/2019/12/04/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E4%B9%8B%E6%B5%85%E6%9E%90On%20r-th%20Root%20Extraction%20Algorithm%20in%20Fq/)
+
+```python
+def AMM(o, r, q):
+    start = time.time()
+    print('\n----------------------------------------------------------------------------------')
+    print('Start to run Adleman-Manders-Miller Root Extraction Method')
+    print('Try to find one {:#x}th root of {} modulo {}'.format(r, o, q))
+    g = GF(q)
+    o = g(o)
+    p = g(random.randint(1, q))
+    while p ^ ((q-1) // r) == 1:
+        p = g(random.randint(1, q))
+    print('[+] Find p:{}'.format(p))
+    t = 0
+    s = q - 1
+    while s % r == 0:
+        t += 1
+        s = s // r
+    print('[+] Find s:{}, t:{}'.format(s, t))
+    k = 1
+    while (k * s + 1) % r != 0:
+        k += 1
+    alp = (k * s + 1) // r
+    print('[+] Find alp:{}'.format(alp))
+    a = p ^ (r**(t-1) * s)
+    b = o ^ (r*alp - 1)
+    c = p ^ s
+    h = 1
+    for i in range(1, t):
+        d = b ^ (r^(t-1-i))
+        if d == 1:
+            j = 0
+        else:
+            print('[+] Calculating DLP...')
+            j = - discrete_log(d, a)
+            print('[+] Finish DLP...')
+        b = b * (c^r)^j
+        h = h * c^j
+        c = c^r
+    result = o^alp * h
+    end = time.time()
+    print("Finished in {} seconds.".format(end - start))
+    print('Find one solution: {}'.format(result))
+    return result
+```
+
+
+
+但该算法只能求得一个根，实际上开0x1337次方，最多会有0x1337个根。
+
+那么如何找到其他根呢？
+
+先找到所有0x1336个proot使得
+$$
+proot^e = 1 (mod\ p)
+$$
+然后乘以上面求得的根即可。
+
+由于
+$$
+(proot^{p-1/e})^e = proot^{p-1} = 1 (mod\ p)
+$$
+所以只需要
+
+```python
+def findAllPRoot(p, e):
+    print("Start to find all the Primitive {:#x}th root of 1 modulo {}.".format(e, p))
+    start = time.time()
+    proot = set()
+    while len(proot) < e:
+        g = pow(random.randint(2, p-1), (p-1)//e, p)
+        if pow(g,e//2,p) != 1:
+            proot.add(g)
+    end = time.time()
+    print("Finished in {} seconds.".format(end - start))
+    return proot
+```
+
+完整sage代码如下
 
 
 

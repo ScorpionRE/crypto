@@ -13,13 +13,6 @@ from Crypto.PublicKey import RSA
 import gmpy2
 import sympy
 
-n = 107316975771284342108362954945096489708900302633734520943905283655283318535709
-p = 27869881035956015184979178092922248885674897320108269064145135676677416930908750101386898785101159450077433625380803555071301130739332256486285289470097290409044426739584302074834857801721989648648799253740641480496433764509396039330395579654527851232078667173592401475356727873045602595552393666889257027478385213547302885118341490346766830846876201911076530008127691612594913799272782226366932754058372641521481522494577124999360890113778202218378165756595787931498460866236502220175258385407478826827807650036729385244897815805427164434537088709092238894902485613707990645011133078730017425033369999448757627854563
-q = 25819261471728040800872878541553321043152462679774978922658476743054196609615260085066604058841210698540997524876908144621893909307784554414162036327648281377886327091581347296131947730522807494517124526464816238370951647893862934621121004498569156746311594099412832189045390297120305667254913052800653355550915386064296154605648963278915319806240264672354108048953297992497878897540380622959711963257886237782410901325113329109297590870937017452019018930748754331672736756917137583464384303108259463535106592418534804375728748609362332554496296532372320633175091519075027001631454173292550340940515568940345329163887
-d = 937
-e = 256
-c = 19384002358725759679198917686763310349050988223627625096050800369760484237557
-
 
 #dp，dq，c求m (RSA_CRT leaks)
 # dp =6500795702216834621109042351193261530650043841056252930930949663358625016881832840728066026150264693076109354874099841380454881716097778307268116910582929
@@ -35,28 +28,22 @@ c = 1938400235872575967919891768676331034905098822362762509605080036976048423755
 # r_dpq(dp,dq)
 
 #n,dp,e求m dp泄露
-# dp = 734763139918837027274765680404546851353356952885439663987181004382601658386317353877499122276686150509151221546249750373865024485652349719427182780275825
-#
-#
-# for i in range(1,e):
-#     if (dp * e - 1) % i == 0:
-#         p = gmpy2.mpz(((dp * e - 1) // i) + 1)
-#         if n % p == 0:
-#             q= n // p
-#             print(p)
-#             print(q)
-#             phi = gmpy2.mpz((p-1)*(q-1))
-#             d = gmpy2.invert(gmpy2.mpz(e),phi) % phi
-#             break
-#
-# print(d)
-# #d = gmpy2.mpz(d)
-# print("DP,d:"+str(d))
-# M = pow(c,d,n)
-# print("十进制M："+ str(M))
-# print(hex(M))
-# print(codecs.decode(hex(M)[2:],'hex'))
-# print(long_to_bytes(M))
+def dp_leak(dp,e,n):
+    dp = 734763139918837027274765680404546851353356952885439663987181004382601658386317353877499122276686150509151221546249750373865024485652349719427182780275825
+
+
+    for i in range(1,e):
+        if (dp * e - 1) % i == 0:
+            p = gmpy2.mpz(((dp * e - 1) // i) + 1)
+            if n % p == 0:
+                q= n // p
+                print(p)
+                print(q)
+                phi = gmpy2.mpz((p-1)*(q-1))
+                d = gmpy2.invert(gmpy2.mpz(e),phi) % phi
+                break
+
+
 
 #共模攻击(使用相同的模数 N、不同的私钥时，加密同一明文消息时即存在共模攻击)
 # e1 = 2303413961
@@ -136,17 +123,22 @@ c = 1938400235872575967919891768676331034905098822362762509605080036976048423755
 
 
 # 小公钥指数攻击（一般e为3） 对K进行爆破，只要k满足 kn + C能够开e次方就可以得明文
-# k = 0
-# while 1:
-#     res = gmpy2.iroot(c + k * n, e)
-#     if res[1] == True:
-#         a = int(res[0])
-#         print(a)
-#         print(int(res[0]))
-#
-#         print(libnum.n2s(int(res[0])))
-#         break
-#     k = k + 1
+def little_e(e,c,n):
+    k = 0
+    while 1:
+        res = gmpy2.iroot(c + k * n, e)
+        if res[1] == True:
+            a = int(res[0])
+            print(a)
+            print(int(res[0]))
+
+            print(libnum.n2s(int(res[0])))
+            break
+        k = k + 1
+
+
+#多线程小公钥指数攻击
+#def liitle_e_mulp(e,c,n):
 
 
 #爆破，给出e的范围
@@ -250,26 +242,26 @@ c = 1938400235872575967919891768676331034905098822362762509605080036976048423755
 # d = gmpy2.invert(e, phi)
 # print("d:"+ str(d))
 
-#rabin算法，e=2
-# inv_p = gmpy2.invert(p, q)
-# inv_q = gmpy2.invert(q, p)
-#
-# # 计算mp和mq
-# mp = pow(c, (p + 1) // 4, p)
-# mq = pow(c, (q + 1) // 4, q)
-#
-# # 计算a,b,c,d
-# a = (inv_p * p * mq + inv_q * q * mp) % n
-# b = n - int(a)
-# c = (inv_p * p * mq - inv_q * q * mp) % n
-# d = n - int(c)
-#
-# for i in (a, b, c, d):
-#     print(bin(i)[2:]) #输出二进制
-#     s = '%x' % i
-#     if len(s) % 2 != 0:
-#         s = '0' + s
-#     print(s.decode('hex'))
+#rabin，e=2,满足p,q = 3 (mod 4)的情况，直接利用Toelli-shanks算法的结论，不满足的方法？？？
+def rabin(e,p,q,n,c):
+    inv_p = gmpy2.invert(p, q)
+    inv_q = gmpy2.invert(q, p)
+
+    # 计算mp和mq
+    mp = pow(c, (p + 1) // 4, p)
+    mq = pow(c, (q + 1) // 4, q)
+
+    # 计算a,b,c,d
+    a = (inv_p * p * mq + inv_q * q * mp) % n
+    b = n - int(a)
+    c = (inv_p * p * mq - inv_q * q * mp) % n
+    d = n - int(c)
+
+    for i in (a, b, c, d):
+        print(bin(i)[2:]) #输出二进制
+        print(i)
+        print(long_to_bytes(i))
+
 
 #选择明文攻击
 # c1 = 128509160179202
@@ -343,14 +335,16 @@ def g():
 
 
 #根据c求m
-def decrypt(e,c,d,n):
+def get_d(e,p,q):
     phi_n = (p - 1) * (q - 1)
     #若无法直接求逆元d
     #print(gmpy2.lcm(p - 1, q - 1))  # 最小公倍数
     #print(gmpy2.gcd(e,phi_n))
     d = gmpy2.invert(e, phi_n)
     print("d:"+ str(d))
+    return d
 
+def decrypt(e, c, d, n):
     M = pow(c,d,n)
 
     #e不是素数，需要分解，变形后，m是之前的x次方
@@ -365,27 +359,44 @@ def decrypt(e,c,d,n):
 
 
 #从公钥文件中获取n、e的值
-# with open("pubkey2.pem",'rb') as f:
-#     pub = RSA.importKey(f.read())
-#     n = pub.n
-#     e = pub.e
-#     print(n,'\n',e)
+def get_ne(filename):
+    with open(filename,'rb') as f:
+        pub = RSA.importKey(f.read())
+        n = pub.n
+        e = pub.e
+        print(n,'\n',e)
+        return n,e
 #
 #
 # #解密文件
-#
-# key_info = RSA.construct((n, e, int(d), p, q))
-# key = RSA.importKey(key_info.exportKey())
-# key = PKCS1_OAEP.new(key)
-# f = open('myflag1', 'r').read()
-# c = base64.b64decode(f)
-# flag = key.decrypt(c)
-# print(flag)
+def decrypt_file1(n,e,d,p,q,filename):
+    key_info = RSA.construct((n, e, int(d), p, q))
+    key = RSA.importKey(key_info.exportKey())
+    key = PKCS1_OAEP.new(key)
+    f = open(filename, 'rb').read()
+    #c = base64.b64decode(f)可以先自行查看具体什么编码
+    flag = key.decrypt(f)
+    print(flag)
 
 #解密文件，不知道为什么可能某种方法无法使用
-# Rsa=rsa.PrivateKey(int(n1), int(e1), int(d1), int(p), int(q1))
-# with open('flag_encry1','rb') as f:
-#      cipher1=f.read()
-#      print(rsa.decrypt(cipher1, Rsa))
+def decrypt_file2(n,e,d,p,q,filename):
+    Rsa=rsa.PrivateKey(int(n), int(e), int(d), int(p), int(q))
+    with open(filename,'rb') as f:
+         cipher1=f.read()
+         print(rsa.decrypt(cipher1, Rsa))
+
+
+
+def main():
+    p = 3
+    q = 5
+    n = 15
+    e = 65537
+    c = 123456
+    decrypt()
+
+if __name__ == main:
+    main()
+
 
 
