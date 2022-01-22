@@ -4,6 +4,9 @@ import codecs
 
 
 #base64
+import re
+
+
 def base64decode(res):
     missing_padding = 4 - len(res) % 4
     if missing_padding:
@@ -29,17 +32,43 @@ def base64decode(res):
 
 
 #曼彻斯特
-# cipher='2559659965656A9A65656996696965A6695669A9695A699569666A5A6A6569666A59695A69AA696569666AA6'
-# def iee(cipher):
-#     tmp=''
-#     for i in range(len(cipher)):
-#         a=bin(eval('0x'+cipher[i]))[2:].zfill(4)
-#         tmp=tmp+a[1]+a[3] #为什么只取a[1],a[3]???
-#         print(tmp)
-#     plain=[hex(int(tmp[i:i+8][::-1],2))[2:] for i in range(0,len(tmp),8)] #八个二进制转十六进制
-#     print(''.join(plain).upper())
-#
-# iee(cipher)
+def bintohex(s1):
+    s2 = ''
+    s1 = re.findall('.{4}', s1)
+    print('每一个hex分隔:', s1)
+    for i in s1:
+        s2 += str(hex(int(i, 2))).replace('0x', '')
+
+    print('ID:', s2)
+
+
+def diffmqst(s):
+    s1 = ''
+    s = re.findall('.{2}', s)
+    cc = '01'
+    for i in s:
+        if i == cc:
+            s1 += '0'
+        else:
+            s1 += '1'
+        cc = i  # 差分加上cc = i
+
+    print('差分曼切斯特解码:', s1)
+    bintohex(s1)
+#将cipher（十六禁止）转换为曼彻斯特编码，0->1表示1
+def mcst_011(cipher):
+    tmp=''
+    for i in range(len(cipher)):
+        a=bin(eval('0x'+cipher[i]))[2:].zfill(4)
+        tmp=tmp+a[1]+a[3]
+    print(tmp)
+
+def mcst_101(cipher):
+    tmp = ''
+    for i in range(len(cipher)):
+        a=bin(eval('0x'+cipher[i]))[2:].zfill(4)
+        tmp=tmp+a[0]+a[2]
+    print(tmp)
 
 #键盘密码
 # strr = "ooo yyy ii w uuu ee uuuu yyy uuuu y w uuu i i rr w i i rr rrr uuuu rrr uuuu t ii uuuu i w u rrr ee www ee yyy eee www w tt ee".split()
@@ -49,16 +78,9 @@ def base64decode(res):
 
 
 
-#base64
-import base64
-import codecs
 
-# cipher = b'MyLkTaP3FaA7KOWjTmKkVjWjVzKjdeNvTnAjoH9iZOIvTeHbvD=='
-# de_b = base64.b64decode(cipher)
-# print(de_b)
 
 #替换base字母表
-
 
 # dict= "JASGBWcQPRXEFLbCDIlmnHUVKTYZdMovwipatNOefghq56rs34ujkxyz012789+/="
 # base64_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P','Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f','g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v','w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/']
@@ -72,15 +94,7 @@ import codecs
 
 #b'BJD{D0_Y0u_kNoW_Th1s_b4se_map}'
 
-#hex to ascii
-# h = '424a447b57653163306d655f74345f424a444354467d'
-# asc = codecs.decode(h,'hex')
-# print(asc)
-#
-# #base32
-# cipher_32 = b'J5XGY6JAN5XGKIDTORSXAIDBO5QXSOSRGI4XKWRTJJUGISCWONMVQUTQMIZDK6SPNU4WUYLOII3WK3LUOBRW24BTMJLTQ5DCGJ4HGYLJGF2WEV3YGNGFO4DWMVDWW5DEI4YXMYSHGV4WE3JZGBSG2ML2MZIT2PI='
-# de_b32 = base64.b32decode(cipher_32)
-# print(de_b32.decode('ascii'))
+
 
 
 #64卦
