@@ -1,5 +1,6 @@
 import gmpy2
 from Crypto.Util.number import long_to_bytes
+from pwnlib import abi
 
 N=0x6b612825bd7972986b4c0ccb8ccb2fbcd25fffbadd57350d713f73b1e51ba9fc4a6ae862475efa3c9fe7dfb4c89b4f92e925ce8e8eb8af1c40c15d2d99ca61fcb018ad92656a738c8ecf95413aa63d1262325ae70530b964437a9f9b03efd90fb1effc5bfd60153abc5c5852f437d748d91935d20626e18cbffa24459d786601
 
@@ -60,5 +61,7 @@ temp=tempqpow((x,1),2,p,2,n)
 c=((temp[0])*gmpy2.invert(temp[1],p**2))%(p**2)
 import Crypto.Util.number
 print(Crypto.Util.number.long_to_bytes(c))
+me = "HelloChainFlag"
+print(keccak256(abi.encodePacked(m)))
 
 #b'IceCTF{john_needs_to_get_his_stuff_together_and_do_things_correctly}'
