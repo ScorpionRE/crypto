@@ -101,10 +101,6 @@ $$
 
 ## 数学
 
-
-
-
-
 ### [WUSTCTF2020]大数计算
 
 ![image-20211107125148733]([BUUCTF-crypto] writeup.assets/image-20211107125148733.png)

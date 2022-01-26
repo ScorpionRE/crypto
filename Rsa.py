@@ -72,54 +72,44 @@ def dp_leak(dp,e,n):
 
 
 # #多文件共模攻击，n相同，e不同
-# e1 = 1697
-# e2 = 599
-# n = 785095419718268286866508214304816985447077293766819398728046411166917810820484759314291028976498223661229395009474063173705162627037610993539617751905443039278227583504604808251931083818909467613277587874545761074364427549966555519371913859875313577282243053150056274667798049694695703660313532933165449312949725581708965417273055582216295994587600975970124811496270080896977076946000102701030260990598181466447208054713391526313700681341093922240317428173599031624125155188216489476825606191521182034969120343287691181300399683515414809262700457525876691808180257730351707673660380698973884642306898810000633684878715402823143549139850732982897459698089649561190746850698130299458080255582312696873149210028240898137822888492559957665067936573356367589784593119016624072433872744537432005911668494455733330689385141214653091888017782049043434862620306783436169856564175929871100669913438980899219579329897753233450934770193915434791427728636586218049874617231705308003720066269312729135764175698611068808404054125581540114956463603240222497919384691718744014002554201602395969312999994159599536026359879060218056496345745457493919771337601177449899066579857630036350871090452649830775029695488575574985078428560054253180863725364147
-#
-# #多行c拼接
-#
-# with open('HUB1','rb') as f:
-#     c1 = gmpy2.mpz(f.read())
-#     print(c1)
-# with open('HUB2','rb') as f:
-#     c2 = gmpy2.mpz(f.read())
-#     print(c2)
-# gcd,s,t = gmpy2.gcdext(e1,e2)
-# # c1 = libnum.s2n(c1)
-# # c2 = libnum.s2n(c2)
-# # print(c1)
-# # print(c2)
-# if s < 0:
-#     s = -s
-#     c1 = gmpy2.invert(c1,n)
-# if t < 0:
-#     t = -t
-#     c2 = gmpy2.invert(c2,n)
-#
-# M = gmpy2.powmod(c1,s,n)*gmpy2.powmod(c2,t,n) % n
-# m = hex(M)
-# print(m)
-# print(codecs.decode(m[2:],'hex'))
-# m = m[2:]
-# m = codecs.decode(m[2:],'hex')
-# m = str(m).split("\\n")
-# # missing_padding = 4 - len(m) % 4
-# # if missing_padding:
-# #     m += '=' * missing_padding
-# for i in range(1,len(m)):
-#     print(m[i])
-#     missing_padding = 4 - len(m[i]) % 4
-#     if missing_padding:
-#         m[i] += '=' * missing_padding
-#     print(base64.b64decode(m[i]))
+
+def multifile_come(filename1,filename2,n,e1,e2):
+    with open(filename1,'rb') as f:
+        c1 = gmpy2.mpz(f.read())
+        print(c1)
+    with open(filename2,'rb') as f:
+        c2 = gmpy2.mpz(f.read())
+        print(c2)
+    gcd,s,t = gmpy2.gcdext(e1,e2)
+    # c1 = libnum.s2n(c1)
+    # c2 = libnum.s2n(c2)
+    # print(c1)
+    # print(c2)
+    if s < 0:
+        s = -s
+        c1 = gmpy2.invert(c1,n)
+    if t < 0:
+        t = -t
+        c2 = gmpy2.invert(c2,n)
+
+    M = gmpy2.powmod(c1,s,n)*gmpy2.powmod(c2,t,n) % n
+    # m = hex(M)
+    # print(m)
+    # print(codecs.decode(m[2:],'hex'))
+    # m = m[2:]
+    # m = codecs.decode(m[2:],'hex')
+    # m = str(m).split("\\n")
+    # # missing_padding = 4 - len(m) % 4
+    # # if missing_padding:
+    # #     m += '=' * missing_padding
+    # for i in range(1,len(m)):
+    #     print(m[i])
+    #     missing_padding = 4 - len(m[i]) % 4
+    #     if missing_padding:
+    #         m[i] += '=' * missing_padding
+    #     print(base64.b64decode(m[i]))
 # #strip处理
 
-# 分行加密，解密
-# m = ""
-# with open("data.txt",'r') as f:
-#     for c in f.readlines():
-#         m += chr(pow(int(c), d, n))
-# print(m)
 
 
 # 小公钥指数攻击（一般e为3） 对K进行爆破，只要k满足 kn + C能够开e次方就可以得明文
@@ -142,15 +132,17 @@ def little_e(e,c,n):
 
 
 #爆破，给出e的范围
-# for e in range(50000,70001):
-#     if gmpy2.gcd(e,phi) == 1:
-#             d = gmpy2.invert(e, phi)
-#             m = pow(c, d, n)
-#             flag = hex(m)[2:]
-#             #不是偶数就要加0？？？但是libnum不可用？？？
-#             if (len(str(flag)) % 2 == 1):
-#                 flag = '0' + flag
-#             print(codecs.decode(flag,'hex'))
+def brute_e(c,d,n,p,q):
+    phi = (p - 1) * (q - 1)
+    for e in range(50000,70001):
+        if gmpy2.gcd(e,phi) == 1:
+                d = gmpy2.invert(e, phi)
+                m = pow(c, d, n)
+                flag = hex(m)[2:]
+                #不是偶数就要加0？？？但是libnum不可用？？？
+                if (len(str(flag)) % 2 == 1):
+                    flag = '0' + flag
+                print(codecs.decode(flag,'hex'))
 
 
 
@@ -366,8 +358,7 @@ def get_ne(filename):
         e = pub.e
         print(n,'\n',e)
         return n,e
-#
-#
+
 # #解密文件
 def decrypt_file1(n,e,d,p,q,filename):
     key_info = RSA.construct((n, e, int(d), p, q))

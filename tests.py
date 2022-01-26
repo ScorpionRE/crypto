@@ -18,7 +18,7 @@ import Rsa
 import gmpy2
 p=8683574289808398551680690596312519188712344019929990563696863014403818356652403139359303583094623893591695801854572600022831462919735839793929311522108161
 n=0xd9d6345f4f961790abb7830d367bede431f91112d11aabe1ed311c7710f43b9b0d5331f71a1fccbfca71f739ee5be42c16c6b4de2a9cbee1d827878083acc04247c6e678d075520ec727ef047ed55457ba794cf1d650cbed5b12508a65d36e6bf729b2b13feb5ce3409d6116a97abcd3c44f136a5befcb434e934da16808b0b
-
+c = 0xd9d6345f4f961790abb7830d367bede431f91112d11aabe1ed311c7710f43b9b0d5331f71a1fccbfca71f739ee5be42c16c6b4de2a9cbee1d827878083acc04247c6e678d075520ec727ef047ed55457ba794cf1d650cbed5b12508a65d36e6bf729b2b13feb5ce3409d6116a97abcd3c44f136a5befcb434e934da16808b0b
 def legendre(a,p):
     return gmpy2.powmod(a%p,(p-1)//2,p)
 def find_a(n,p):
@@ -61,7 +61,6 @@ temp=tempqpow((x,1),2,p,2,n)
 c=((temp[0])*gmpy2.invert(temp[1],p**2))%(p**2)
 import Crypto.Util.number
 print(Crypto.Util.number.long_to_bytes(c))
-me = "HelloChainFlag"
-print(keccak256(abi.encodePacked(m)))
+
 
 #b'IceCTF{john_needs_to_get_his_stuff_together_and_do_things_correctly}'
