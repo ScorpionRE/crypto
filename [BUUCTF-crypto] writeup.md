@@ -1,4 +1,4 @@
-# [BUUCTF-crypto] writeup
+#  [BUUCTF-crypto] writeup
 
 ## 数学知识
 

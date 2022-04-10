@@ -1,7 +1,7 @@
 import socket
-
+import re
 import os
-
+import hash
 obj = None
 
 
@@ -22,6 +22,21 @@ def reads():
 def sends(content):
     global obj
     obj.sendall(bytes(content + "\n", encoding="utf-8"))
+
+def get_m(str):
+    return str.split(b'==')[1].strip(b'\n')
+
+def get_flag(str):
+    tmp = str.split(b'+')[1]
+    m = tmp.split(b')')[0]
+    return m
+
+def POW(str):
+    m = str(get_m(str),encodings = "utf-8")
+    flag = str(get_flag(str),encodings = "utf-8")
+    return hash.brute_sha256(flag,m)
+
+
 
 
 def close():

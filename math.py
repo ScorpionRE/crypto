@@ -80,3 +80,5 @@ r = [
 a = crt(m,r)
 print(a[0])
 print(gmpy2.iroot(a[0],4)[0])
+
+a = [1]

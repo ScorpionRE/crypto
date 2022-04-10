@@ -1,7 +1,5 @@
 import hashlib
-#a="11 51 51 40 46 51 38"
-a = "102 108 97 103 123 119 104 101 110 119 101 116 104 105 110 107 105 116 105 115 112 111 115 115 105 98 108 101 125"
-b=a.split(" ")
+
 #m="38e4c352809e150186920aac37190cbc"
 # flag=""
 # for j in range(0,26):
@@ -24,8 +22,8 @@ b=a.split(" ")
 #                     break
 
 #md5爆破
-s = hashlib.md5('525520'.encode('utf8')).hexdigest()
-print(s)
+# s = hashlib.md5('525520'.encode('utf8')).hexdigest()
+# print(s)
 #print hashlib.md5(s).hexdigest().upper()
 # k = 'TASC?O3RJMV?WDJKX?ZM'                    #要还原的明文
 # for i in range(26):
@@ -54,15 +52,18 @@ print(s)
 
 
 #sha256爆破
-# flag="1579ad72fb36"
-# m = "65ce2189d6fb335390abf6b5bfffef731c951773810cc1c55a0fcac3f6c62cdc"
-# for x in range(21,127):
-#     for y in range(21,127):
-#         for z in range(21,127):
-#             for q in range(21,127):
-#                 w=hashlib.sha256(str(flag + chr(x) + chr(y) + chr(z) + chr(q) ).encode("utf-8"))
-#                 w0=w.hexdigest()
-#
-#                 if(w0==m):
-#                     print(flag + chr(x)+chr(y)+chr(z) + chr(q))
-#                     break
+def brute_sha256(flag,m):
+    for x in range(21,127):
+        for y in range(21,127):
+            for z in range(21,127):
+                for q in range(21,127):
+                    w=hashlib.sha256(str( chr(x) + chr(y) + chr(z) + chr(q) + flag ).encode("utf-8"))
+                    w0=w.hexdigest()
+
+                    if(w0==m):
+                        print( chr(x)+chr(y)+chr(z) + chr(q) + flag)
+                        return chr(x)+chr(y)+chr(z)+chr(q)
+
+flag="FMtjZVpaMr89wZAQ"
+m = "27383b68c880e4f39723208b7dc557fb3f7f2cde6631d8295030d8c241f010f4"
+brute_sha256(flag,m)
