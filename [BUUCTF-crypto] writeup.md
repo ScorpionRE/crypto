@@ -1394,3 +1394,62 @@ $$
 
 ## 脑洞
 
+### Left or Right【二叉树】
+
+#### 题目
+
+Left?Middle?No，I want right！（flag is right？！）
+
+一个无法打开的jpg文件
+
+
+
+#### 思路
+
+无法打开，可能和文件头尾有关，查找jpg文件头尾
+
+https://blog.csdn.net/xiangshangbashaonian/article/details/80156865
+
+文件头FFD8，前面有一段冗余信息
+
+![image-20220514194407878]([BUUCTF-crypto] writeup.assets/image-20220514194407878.png)
+
+文件尾FFD9，后面也有一段冗余信息，先分别去掉，然后另存为图片，发现是一个二叉树图片
+
+![image-20220514194412158]([BUUCTF-crypto] writeup.assets/image-20220514194412158.png)
+
+![image-20220514194632623]([BUUCTF-crypto] writeup.assets/image-20220514194632623.png)
+
+发现都是十六进制，且好像基本一致，转化为字符串分别为
+
+```python
+left = "f09e54c1bad2x38mvyg7wzlsuhkijnop"
+middle = "905e4c1fax328mdyvg7wbsuhklijznop"
+```
+
+根据题目，可能分别为前序遍历，中序遍历的结果，最后根据这个求后序遍历即为flag
+
+```python
+left = "f09e54c1bad2x38mvyg7wzlsuhkijnop"
+middle = "905e4c1fax328mdyvg7wbsuhklijznop"
+las = ""
+
+def LM2Last(middle):
+    global left
+    global las
+    root = left[0]
+    left = left[1:]
+    root_po = middle.find(root)
+    l = middle[0:root_po]
+    r = middle[root_po+1:len(middle)]
+    if len(l) > 0:
+        LM2Last(l)
+    if len(r) > 0:
+        LM2Last(r)
+    las += root
+
+
+if __name__ == "__main__":
+    LM2Last(middle)
+    print(las)
+```
