@@ -16,11 +16,11 @@ with open('flag.enc', 'r') as f:
 
 
 def calc(j):
-    print j
+    print(j)
     a, b = gmpy2.iroot(cipher + j * N, 3)
     if b == 1:
         m = a
-        print '{:x}'.format(int(m)).decode('hex')
+        print('{:x}'.format(int(m)).decode('hex'))
         pool.terminate()
         exit()
 
@@ -33,6 +33,6 @@ def SmallE():
 
 
 if __name__ == '__main__':
-    print 'start'
+    print('start')
     freeze_support()
     SmallE()

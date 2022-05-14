@@ -326,7 +326,7 @@ c语言中数据在内存中的存储（大小端）
 
 
 
-### [NCTF2019]reverse【】
+### [NCTF2019]reverse【DES-Kn泄露】
 
 #### 题目
 
@@ -348,13 +348,21 @@ with open('cipher', 'wb') as f:
 # Leak: d.Kn[10] == [0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1]
 ```
 
-Pydes中的DES，泄露了第十轮的密钥
+Pydes中的DES，泄露了Kn[10]
 
 
 
 #### 思路
 
+根据https://csrc.nist.gov/csrc/media/publications/fips/46/3/archive/1999-10-25/documents/fips46-3.pdf，泄露出的Kn[10]为第11组子密钥K11
 
+`PERMUTED CHOICE 2`是一个56 bits -> 48 bits的置换。可以穷举被truncated的8bits，逆一下对K11的`PERMUTED CHOICE 2`即可返回到`C11 D11`。
+
+再沿着那个长流程顺下去（`Ci`, `Di`经过16次`LEFT SHIFTS`后会复原），就可以恢复出所有子密钥。
+
+![image-20220514163157104]([BUUCTF-crypto] writeup.assets/image-20220514163157104.png)
+
+https://blog.soreatu.com/posts/intended-solution-to-crypto-problems-in-nctf-2019/#reverse909pt-2solvers
 
 
 
@@ -1293,7 +1301,7 @@ m = Rsa.decrypt(c,d,p*q)
 ##### 题目
 
 $$
-n = p^4 * q
+n = p^4 * q
 $$
 
 已知dp，c，n，e
