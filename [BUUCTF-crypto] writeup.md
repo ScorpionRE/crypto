@@ -451,6 +451,12 @@ https://blog.csdn.net/m0_49109277/article/details/117324488
 
 
 
+
+
+### [GKCTF 2021]Random【MT19973】
+
+
+
 ### [AFCTF2018]tinylfsr
 
 根据给出的文件，发现两次文件加密
@@ -1392,7 +1398,7 @@ $$
 
 
 
-## 脑洞
+## ???
 
 ### Left or Right【二叉树】
 

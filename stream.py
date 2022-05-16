@@ -82,51 +82,86 @@ from itertools import cycle
 
 # Lfsr
 
-from Crypto.Util.strxor import strxor
-import codecs
-cip = open('cipher.txt', 'rb').read()
-msg = open('Plain.txt', 'rb').read()
+# from Crypto.Util.strxor import strxor
+# import codecs
+# cip = open('cipher.txt', 'rb').read()
+# msg = open('Plain.txt', 'rb').read()
+#
+# print(codecs.encode(strxor(cip, msg)[:8], 'hex'))
+#
+# key = '0123456789abcdef'
+# R = int(key, 16)
+# mask = 0b1101100000000000000000000000000000000000000000000000000000000000
+#
+#
+# def lfsr(R, mask):
+#     # 左移1位：保留末尾 63 位，在最后添加一个0
+#     output = (R << 1) & 0xffffffffffffffff
+#
+#     # i：保留 R 的前 0、1、3、4位
+#     i = (R & mask) & 0xffffffffffffffff
+#
+#     lastbit = 0
+#     while i != 0:
+#         lastbit ^= (i & 1)
+#         i = i >> 1
+#     # lastbit：统计 i 里面有多少个1, 奇数个则为1, 偶数个则为0
+#
+#     # output: R 左移1位，再添加 lastbit
+#     output ^= lastbit
+#     return (output, lastbit)
+#
+#
+# cip = open('flag_encode.txt', 'rb').read()
+# a = ''.join([chr(int(b, 16)) for b in [key[i:i + 2] for i in range(0, len(key), 2)]])
+#
+# ans = ""
+#
+# for i in range(len(a)):
+#     ans += (chr((cip[i] ^ ord(a[i]))))
+#
+# lent = len(cip)
+#
+# for i in range(len(a), lent):
+#     tmp = 0
+#     for j in range(8):
+#         (R, out) = lfsr(R, mask)
+#         tmp = (tmp << 1) ^ out
+#     ans += (chr(tmp ^ cip[i]))
+#
+# print(ans)
 
-print(codecs.encode(strxor(cip, msg)[:8], 'hex'))
+# MT19937 randcrack
+from hashlib import md5
+from randcrack import RandCrack
+def foo(l,i):
+    a=[]
+    a.append(l[i])
+    b1=l[i+1]>>32
+    b2=l[i+1]&(2**32-1)
+    a.append(b2)
+    a.append(b1)
+    b1=l[i+2]>>64
+    b2=(l[i+2]&(2**64-1))>>32
+    b3=l[i+2]&(2**32-1)
+    a.append(b3)
+    a.append(b2)
+    a.append(b1)
+    return a
 
-key = '0123456789abcdef'
-R = int(key, 16)
-mask = 0b1101100000000000000000000000000000000000000000000000000000000000
+def mt19937(filename):
+    with open(filename,'r') as f:
+        l=f.readlines()
+    l=[int(i.strip()) for i in l]
+    ll=[]
+    for i in range(0,len(l),3):
+        ll+=foo(l,i)
+    rc=RandCrack()
+    for i in ll:
+        rc.submit(i)
+    aa=rc.predict_getrandbits(32)
+    print(md5(str(aa).encode()).hexdigest())
 
 
-def lfsr(R, mask):
-    # 左移1位：保留末尾 63 位，在最后添加一个0
-    output = (R << 1) & 0xffffffffffffffff
-
-    # i：保留 R 的前 0、1、3、4位
-    i = (R & mask) & 0xffffffffffffffff
-
-    lastbit = 0
-    while i != 0:
-        lastbit ^= (i & 1)
-        i = i >> 1
-    # lastbit：统计 i 里面有多少个1, 奇数个则为1, 偶数个则为0
-
-    # output: R 左移1位，再添加 lastbit
-    output ^= lastbit
-    return (output, lastbit)
-
-
-cip = open('flag_encode.txt', 'rb').read()
-a = ''.join([chr(int(b, 16)) for b in [key[i:i + 2] for i in range(0, len(key), 2)]])
-
-ans = ""
-
-for i in range(len(a)):
-    ans += (chr((cip[i] ^ ord(a[i]))))
-
-lent = len(cip)
-
-for i in range(len(a), lent):
-    tmp = 0
-    for j in range(8):
-        (R, out) = lfsr(R, mask)
-        tmp = (tmp << 1) ^ out
-    ans += (chr(tmp ^ cip[i]))
-
-print(ans)
+if __name__ == "__main__":
+    mt19937("random.txt")
