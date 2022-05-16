@@ -28,6 +28,9 @@ import sympy
 # r_dpq(dp,dq)
 
 #n,dp,e求m dp泄露
+from libnum import n2s
+
+
 def dp_leak(dp,e,n):
 
     for i in range(1,e):
@@ -323,6 +326,12 @@ def g():
     com = gmpy2.gcd()
     return com
 
+# c = m^n mod n  Schmidt-Samoa
+def schmit_samoa(N,d,c):
+    pq = libnum.gcd(pow(2, d * N, N) - 2, N)
+
+    m = pow(c, d, pq)
+    print(n2s(m))
 
 #根据c求m
 def get_d(e,p,q):
