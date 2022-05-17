@@ -90,26 +90,25 @@ from itertools import cycle
 # print(codecs.encode(strxor(cip, msg)[:8], 'hex'))
 #
 # key = '0123456789abcdef'
-# R = int(key, 16)
-# mask = 0b1101100000000000000000000000000000000000000000000000000000000000
+
 #
 #
-# def lfsr(R, mask):
-#     # 左移1位：保留末尾 63 位，在最后添加一个0
-#     output = (R << 1) & 0xffffffffffffffff
-#
-#     # i：保留 R 的前 0、1、3、4位
-#     i = (R & mask) & 0xffffffffffffffff
-#
-#     lastbit = 0
-#     while i != 0:
-#         lastbit ^= (i & 1)
-#         i = i >> 1
-#     # lastbit：统计 i 里面有多少个1, 奇数个则为1, 偶数个则为0
-#
-#     # output: R 左移1位，再添加 lastbit
-#     output ^= lastbit
-#     return (output, lastbit)
+def lfsr(R, mask):
+    # 左移1位：保留末尾 63 位，在最后添加一个0
+    output = (R << 1) & 0xffffffffffffffff
+
+    # i：保留 R 的前 0、1、3、4位
+    i = (R & mask) & 0xffffffffffffffff
+
+    lastbit = 0
+    while i != 0:
+        lastbit ^= (i & 1)
+        i = i >> 1
+    # lastbit：统计 i 里面有多少个1, 奇数个则为1, 偶数个则为0
+
+    # output: R 左移1位，再添加 lastbit
+    output ^= lastbit
+    return (output, lastbit)
 #
 #
 # cip = open('flag_encode.txt', 'rb').read()
@@ -164,4 +163,5 @@ def mt19937(filename):
 
 
 if __name__ == "__main__":
-    mt19937("random.txt")
+    #mt19937("random.txt")
+    mask = 0b10100100000010000000100010010100

@@ -23,7 +23,9 @@
 
 - [x] [GKCTF 2021]Random【MT19937】
 
+### LFSR
 
+- [ ] [CISCN2018]oldstreamgame
 
 ## RSA
 
@@ -37,4 +39,7 @@
 
 
 
-## 脑洞？！
+## 脑洞？！misc
+
+- [x] [BSidesSF2019]slashslash【openssl+zip注释】
+- [ ] 

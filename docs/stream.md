@@ -162,6 +162,8 @@ def mt19937(filename):
 
 
 
+
+
 ## [AFCTF2018]tinylfsr
 
 根据给出的文件，发现两次文件加密
@@ -232,3 +234,16 @@ print(ans)
 
 ```
 
+
+
+## [CISCN2018]oldstreamgame【】
+
+### 题目
+
+010editor打开发现stream.py和key
+
+![image-20220517162243830](stream.assets/image-20220517162243830.png)
+
+### 解法
+
+R未知，

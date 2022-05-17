@@ -2,16 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7b72538f-e700-46a9-b36a-cf7130bfe9a2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/ef" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ps" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/r" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test.sage" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/misc.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/stream.assets/image-20220517162243830.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/1.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/aes.py" beforeDir="false" afterPath="$PROJECT_DIR$/aes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/block.py" beforeDir="false" afterPath="$PROJECT_DIR$/block.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ti.py" beforeDir="false" afterPath="$PROJECT_DIR$/ti.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/stream.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/stream.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stream.py" beforeDir="false" afterPath="$PROJECT_DIR$/stream.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
