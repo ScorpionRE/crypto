@@ -130,6 +130,9 @@ def try_des(cipher,roundkey):
             print(plain)
 
 
+
+
+
 if __name__ == "__main__":
     with open('cipher','rb') as f:
         flag_enc = f.read()

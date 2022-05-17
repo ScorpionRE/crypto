@@ -6,7 +6,7 @@ from hashlib import md5
 from datetime import datetime
 from time import time
 from parse import parse
-from multiprocessing import Pool
+#from multiprocessing import Pool
 
 def oracle_encrypt(conn, pt):
     conn.sendlineafter('> ', '1')
@@ -65,5 +65,46 @@ def go(attempt):
     conn.close()
     return False
 
-THREADS = 16
-Pool(THREADS).map(go, range(256))
+
+def pre_num(ps):
+    with open(ps,'r') as f:
+        ps = f.readlines()
+    s = []
+    for i in range(len(ps)):
+        ps[i] = int(ps[i].strip('\n'))
+        num = bin(ps[i])[2:].rfind('1')
+        s.append(num)
+    print(s)
+    return ps,s
+
+def find_choose(r,s,ps):
+    with open(r,'r') as f:
+        r = int(f.read())
+    m = list('0'*512)  #bchoose
+
+    for i in range(512):
+        if (r>>i) % 2 == 0:
+            m[s.index(511-i)] = '0'
+        else:
+            r = r^ps[s.index(511-i)]
+            m[s.index(511-i)] = '1'
+
+    choose = int("0b" + "".join(m), 2)
+    print(choose)
+    return choose
+
+def sm():
+    ps,s = pre_num("ps")
+    print(ps)
+    choose = find_choose("r",s,ps)
+    key = long_to_bytes(int(hashlib.md5(long_to_bytes(choose)).hexdigest(), 16))
+    aes_obj = AES.new(key, AES.MODE_ECB)
+    f2 = open("ef", "rb")
+    ef = f2.read()
+    ef = base64.b64decode(ef)
+    result = aes_obj.decrypt(ef)
+    print(result)
+
+
+if __name__ == "__main__":
+    key = sm()
