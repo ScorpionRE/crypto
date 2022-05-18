@@ -1,4 +1,12 @@
-i = 12269477678599067519781256001818656329041551919143463830255138003182266704954352654920586885461104156925850407559021549528473021568243699272802197032665088
-b = bin(i)[2:]
-print(b)
-print(b.rfind("1"))
+from Crypto.Util.number import long_to_bytes
+
+with open("chall.txt",'r') as f:
+    m = f.readlines()
+
+flag = ""
+for i in range(len(m)):
+    m[i] = m[i].strip("\n")
+    flag += bin(int(m[i]))[-1]
+
+print(long_to_bytes(int(flag,2)))
+print(long_to_bytes(int(flag[::-1],2)))

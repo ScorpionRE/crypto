@@ -25,7 +25,7 @@
 
 ### LFSR
 
-- [ ] [CISCN2018]oldstreamgame
+- [ ] [CISCN2018]oldstreamgame【求初始状态】
 
 ## RSA
 
@@ -42,4 +42,4 @@
 ## 脑洞？！misc
 
 - [x] [BSidesSF2019]slashslash【openssl+zip注释】
-- [ ] 
+- [x] [Zer0pts2020]ROR【奇偶性】
