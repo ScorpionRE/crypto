@@ -93,6 +93,10 @@ from itertools import cycle
 
 #
 #
+from Crypto.Util.number import long_to_bytes
+
+
+
 def lfsr(R, mask):
     # 左移1位：保留末尾 63 位，在最后添加一个0
     output = (R << 1) & 0xffffffffffffffff
@@ -162,6 +166,53 @@ def mt19937(filename):
     print(md5(str(aa).encode()).hexdigest())
 
 
+# mask=0b10100100000010000000100010010100 #0,2,5,12,20,24,27,29
+
+# lfsr 求逆
+
+def solve(c):
+    li = []
+    for i in range(32):
+        temp = '1' + ''.join(li) + c[:31 - len(li)]
+        if int(temp[0]) ^ int(temp[2]) ^ int(temp[5]) ^ int(temp[12]) ^ int(temp[20]) ^ int(temp[24]) ^ int(
+                temp[27]) ^ int(temp[29]) == int(c[31 - len(li)]):
+
+            li.insert(0, '1')
+        else:
+
+            li.insert(0, '0')
+    return li
+
+
+
+
+# flag{926201d7} 在buuctf提交时要添加0x,为此白给了好多次.
+def re_lfsr(mask,output):
+    N = 32
+    with open(output, 'rb') as f:
+        b = f.read()
+    key = ''
+    for i in range(N // 8):
+        t = ord(long_to_bytes(b[i]))
+        for j in xrange(7, -1, -1):
+            key += str(t >> j & 1)
+    idx = 0
+    ans = ""
+    key = key[31] + key[:32]
+    while idx < 32:
+        tmp = 0
+        for i in range(32):
+            if mask >> i & 1:
+                tmp ^= int(key[31 - i])
+        ans = str(tmp) + ans
+        idx += 1
+        key = key[31] + str(tmp) + key[1:31]
+    num = int(ans, 2)
+    print(hex(num))
+
+def
+
 if __name__ == "__main__":
     #mt19937("random.txt")
     mask = 0b10100100000010000000100010010100
+    re_lfsr(mask,"key")

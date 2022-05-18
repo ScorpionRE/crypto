@@ -25,11 +25,13 @@
 
 ### LFSR
 
-- [ ] [CISCN2018]oldstreamgame【求初始状态】
+- [ ] [CISCN2018]oldstreamgame【output+F->初始状态】
 
 ## RSA
 
 - [x] [GUET-CTF2019]Uncle Sam【c = m^n mod n】
+
+
 
 ## ECC
 
