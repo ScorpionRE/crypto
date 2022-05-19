@@ -11,13 +11,13 @@
 
 
 
-## 块密码
+## [块密码](docs/block.md)
 
 ### AES
 
 - [ ] [CISCN2018]sm【SM、AES】
 
-## 流密码
+## [流密码](docs/stream.md)
 
 ### 随机数
 
@@ -25,7 +25,7 @@
 
 ### LFSR
 
-- [ ] [CISCN2018]oldstreamgame【output+F->初始状态】
+- [x] [CISCN2018]oldstreamgame【output+F->初始状态】
 
 ## RSA
 
@@ -39,7 +39,10 @@
 
 
 
+## [秘密共享](docs/secret_sharing.md)
 
+- [x] [ACTF2018]花开藏宝地【boom】
+- [x] [UTCTF2020]Curveball【shamir】
 
 ## 脑洞？！misc
 

@@ -194,7 +194,7 @@ def re_lfsr(mask,output):
     key = ''
     for i in range(N // 8):
         t = ord(long_to_bytes(b[i]))
-        for j in xrange(7, -1, -1):
+        for j in range(7, -1, -1):
             key += str(t >> j & 1)
     idx = 0
     ans = ""
@@ -210,7 +210,6 @@ def re_lfsr(mask,output):
     num = int(ans, 2)
     print(hex(num))
 
-def
 
 if __name__ == "__main__":
     #mt19937("random.txt")
