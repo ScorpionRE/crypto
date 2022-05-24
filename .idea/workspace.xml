@@ -2,12 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7b72538f-e700-46a9-b36a-cf7130bfe9a2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/docs/block.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/secrect_sharing.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/secrect_sharing.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/xor.assets/t0189dac1c8ab2412c8.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/xor.assets/t01dd9c90c1ecde8471.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/xor.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cipher" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/AES.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/stream.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/stream.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/stream.py" beforeDir="false" afterPath="$PROJECT_DIR$/stream.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

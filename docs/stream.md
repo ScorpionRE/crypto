@@ -1,80 +1,5 @@
 # 流密码
 
-## ?[AFCTF2018]你听过一次一密么？
-
-一次一密（One-Time-Pad）：xor key  明文多长，密文就多长（适合少量明文消息）
-
-Many-Time-Pad攻击：多个明文异或同样的key
-
-https://www.ruanx.net/many-time-pad/
-
-攻击思想：对于每一条密文Ci，拿去异或其他所有密文。然后去数每一列有多少个英文字符，作为“Mi在这一位是空格”的评分。依据评分从大到小排序，依次利用 “某个明文的某一位是空格” 这种信息恢复出所有明文的那一列。如果产生冲突，则舍弃掉评分小的
-
-
-
-**修复语句太绝了**
-
-
-
-## ？[De1CTF2019]xorz 【频率分析/break repeating-key】
-
-**法一：流密码**
-
-参考
-
-https://www.anquanke.com/post/id/161171#h3-
-
-http://socold.cn/index.php/archives/65/
-
-### 一.猜测密钥长度
-
-1.暴力破解：
-
-https://www.ruanx.net/many-time-pad/
-
-给的是 m[i]⊕k[i]⊕s[i], 其中 s 已知，故实际上我们拿到了 m[i]⊕k[i]. 在这里 k 是有周期的，且周期不超过38。如果知道了 k 的周期，那么用 Many-Time-Pad 就可以成功攻击。由于 `len(key)` 并不大，从大到小枚举 `len(key)`，肉眼判断是否为flag即可。最后发现 `len(key)=30` 是满足要求的。
-
-但是这种方法过于耗时费力
-
-2.汉明距离：一组二进制数据变成另一组数据所需的步骤数。对两组二进制数据进行异或运算，并统计结果为1的个数，那么这个数就是汉明距离。
-
-- 根据扩展资料：
-
-  - 两个以ascii编码的英文字符的汉明距离是2-3之间，也就是说正常英文字母的平均汉明距离为2-3（每比特），任意字符（非纯字母）的两两汉明距离平均为4。
-
-  - 正确分组的密文与密文的汉明距离等于明文与明文的汉明距离（可以通过按正确密钥长度分组的密文与密文异或等于明文与明文异或证明）
-
-    因此，当我们使用了正确的密钥长度后，两两字母进行计算汉明距离，那么这个值应该是趋于最小。为了增加效率，我们不需要对每一对分组都计算汉明距离，只需取出前几对就可说明问题。当然为了排除偶然误差，结果不应该只取最小的那一个密钥长度，而是酌情多取几组
-
-
-
-### 二.根据猜出的密文长度进行解密
-
-两种方法：
-
-- 合理利用明文的空格
-
-  在使用异或加密的形式下，使用相同密钥加密的明文和秘文间存在这个规律，密文和密文异或等于明文和明文异或,并且二者的汉明距离一样。
-
-  空格和所有小写字母异或结果是相应的大写字母，空格和所有大写字母异或是相应的小写字母。
-
-  ![img](stream.assets/t01dd9c90c1ecde8471.jpg)
-
-  ![img](stream.assets/t0189dac1c8ab2412c8.jpg)
-
- 	1. 使用取模运算把密文分成n个分组（其中n是密钥长度），如此以来，我们就有了n个独立的凯撒加密式的密文组（因为每个分组里面的值是使用同一个密钥字节明文异或）。这样就把问题简化成了破解n个独立的凯撒加密模式的单字节抑或密码方式。这一步可以直接使用爆破，但是效率不高。我们采取另一种姿势。 
- 	2. 将2中的每个分组做如下的操作：每个分组做嵌套循环，内循环，外循环。设置外循环计数值possible*_space=0，max_*possible=0，设置内循环计数值maxpossible=0,依次取出每个分组中的每一个字节做与其他字节两两抑或进行内循环，如果结果是字母，我们就把内循环计数值maxpossible+1,在每个内循环结束后进行max*_possible的更新（与内循环maxpossible做对比），并记录当前字节的位置到possible_*space，然后外循环继续。直至遍历完所有的字节。取出max*_possible对应的字节位置possible_*space处的字节码，我们把它对应的明文假设成空格（根据之前的讨论）然后将该位置的字节和0x20（空格）异或;找出相应位置的密钥字节。 
-
-3. 重复2中的步骤，依次根据每个分组找出每位的密钥字节，至此密钥破解完毕 
-
-4. 将找出的密钥用于破解密文。当密文足够多，可以发现破解的准确率很高，基本可以做到无差别破解。
-
-
-
-**词频分析**
-
-https://codeleading.com/article/68135872581/
-
 
 
 ## ？[SUCTF2019]MT【移位】
@@ -286,3 +211,99 @@ https://ctf-wiki.org/crypto/streamcipher/fsr/lfsr/#2018-ciscn-oldstreamgame
 https://www.cnblogs.com/Mr-small/p/14125439.html
 
 ![image-20220518211425446](stream.assets/image-20220518211425446.png)
+
+## [CISCN]lfsr【output->mask,BM】
+
+### 题目
+
+```python
+import random
+
+from secret import flag
+
+N = 100
+MASK = 2**(N+1) - 1
+
+def lfsr(state, mask):
+    feedback = state & mask
+    feed_bit = bin(feedback)[2:].count("1") & 1
+    output_bit = state & 1
+    state = (state >> 1) | (feed_bit << (N-1))
+    return state, output_bit
+
+def main():
+    assert flag.startswith("flag{")
+    assert flag.endswith("}")
+
+    mask = int(flag[5:-1])
+    assert mask.bit_length() == N
+    
+    state  = random.randint(0, MASK)
+    print(state)
+    
+    outputs = ''
+    for _ in range(N**2):
+        state, output_bit = lfsr(state, mask)
+        outputs += str(output_bit)
+    
+    with open("output.txt", "w") as f:
+        f.write(outputs)
+
+main()
+```
+
+### 解法
+
+LFSR，只知道10000个bit的output，不知道初始状态和掩码，flag主要与掩码有关。
+
+由于LFSR的性质，每次生成的bit都会加到向量的最低位，同时丢弃最高位，因此在连续100次生成后，原有的state的所有位都被丢弃，lfsr的状态会转化为已知的100个bit——即output的前100位。之后，完全知道lfsr的状态，只需要在已知状态的情况下推出mask。
+
+每连续100个bit可以生成下一个bit，我们知道这100个bit，也知道下一个bit，但不知道mask，也就是说需要在 GF(2) 上，100位的已知的状态向量，点乘上 100位的掩码向量，得到的数已知。现在求掩码向量。
+
+上面是一个方程；而状态向量有 100维，我们需要 100组方程才能解出整个掩码向量解。由于在有限域GF(2)内，只有0和1，此时乘法相当于异或，加法相当于与运算。
+因此可直接将公式中的异或（⊕）替换为乘法（*），将与运算（&）替换为加法（+），即可得到线性方程组：
+$$
+state[101] =  mask[100]*state[100] + mask[99]*state[99] + ... + mask[1]*state[1]
+\\ state[102] =  mask[101]*state[101] + mask[100]*state[100]+...+mask[1]*state[2]
+\\...
+\\sate[200] = mask[100]*state[199] + mask[99]*state[198]+...+mask[1]*state[100]
+$$
+方程组的问题可以转化为矩阵求逆的问题。把 lfsr 的状态一行一行地写在矩阵上，形成的矩阵记为 M. 把 lsfr 每次所生成的结果也拼成一个向量，记为 T. 
+
+那么掩码向量 v 使得：
+$$
+M⋅v=T
+$$
+于是两边左乘M的逆矩阵，可以得到掩码向量：
+$$
+v = M^{-1}·T
+$$
+
+
+```python
+def BM(output,length):
+    with open(output,'r') as f:
+        out = f.read()
+        s = [int(x) for x in out]
+        print(len(s))
+    list2 = []
+    for i in range(length):
+        list2.append(int(j) for j in list(reversed(out[i:i+length])))
+
+    M = matrix(GF(2),list2)
+    T = vector(GF(2),length)
+
+
+    for i in range(length):
+        T[i] = s[i + length ]
+
+    try:
+        mask =  M.inverse() * T
+        print((int(''.join(map(str, (mask))), base=2)))
+        return mask
+    except:
+        return
+
+```
+
+https://www.codeleading.com/article/58654807383/

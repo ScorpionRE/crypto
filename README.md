@@ -1,5 +1,5 @@
 # crypto
- scripts and writeups for CTF
+ scripts and writeups
 
 ## 数学
 
@@ -15,7 +15,7 @@
 
 ### AES
 
-- [ ] [CISCN2018]sm【SM、AES】
+- [x] [CISCN2018]sm【SM、AES】
 
 ## [流密码](docs/stream.md)
 
@@ -26,6 +26,7 @@
 ### LFSR
 
 - [x] [CISCN2018]oldstreamgame【output+F->初始状态】
+- [x] [CISCN2020]lfsr【output->mask,B-M】
 
 ## RSA
 
@@ -39,7 +40,7 @@
 
 
 
-## [秘密共享](docs/secret_sharing.md)
+## [秘密共享](docs/secrect_sharing.md)
 
 - [x] [ACTF2018]花开藏宝地【boom】
 - [x] [UTCTF2020]Curveball【shamir】
