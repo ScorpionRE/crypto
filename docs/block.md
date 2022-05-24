@@ -151,3 +151,11 @@ print(key)
 
 ```
 
+
+
+# DES
+
+## [CISCN2019]part_des【】
+
+### 题目
+

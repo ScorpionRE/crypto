@@ -5,6 +5,7 @@
 
 [一些数学（](docs/math.md)
 
+- [x] [CISCN 2019]puzzles【综合】
 
 
 ##  古典
@@ -16,6 +17,10 @@
 ### AES
 
 - [x] [CISCN2018]sm【SM、AES】
+
+### DES
+
+- [ ] [CISCN2019]part_des【】
 
 ## [流密码](docs/stream.md)
 
