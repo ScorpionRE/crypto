@@ -2,19 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7b72538f-e700-46a9-b36a-cf7130bfe9a2" name="Default Changelist" comment="output-&gt;mask,BM">
-      <change afterPath="$PROJECT_DIR$/docs/math.assets/3FBFDED7D8490179D1D0C09388321A6E.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/math.assets/image-20220524213218362.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/math.assets/image-20220524213227849.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/math.assets/image-20220524214808439.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/math.assets/image-20220524220401266.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/math.assets/image-20220524221053263.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/math.assets/image-20220524221735121.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cipher" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/block.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/block.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/math.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/math.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ma.py" beforeDir="false" afterPath="$PROJECT_DIR$/ma.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/RSA.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/RSA.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ti.py" beforeDir="false" afterPath="$PROJECT_DIR$/ti.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +42,7 @@
       <recent name="D:\ctf\crypto\tool\crypto" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.ma">
+  <component name="RunManager" selected="Python.ti">
     <configuration name="aes" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="crypto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -160,9 +150,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.ti" />
         <item itemvalue="Python.ma" />
         <item itemvalue="Python.stream" />
-        <item itemvalue="Python.ti" />
         <item itemvalue="Python.aes" />
         <item itemvalue="Python.tests" />
       </list>

@@ -508,6 +508,27 @@ print(N == n)
 decrypt_RSA(c, 65537, PP, QQ)```
 ```
 
+
+
+## [CISCN2020]rsa【n=p1·p2·p3】
+
+### 题目
+
+给出n、c、e
+
+### 解法
+
+用factordb发现能直接分解
+
+求出d、解密即可
+
+```python
+phi = (p1-1)*(p2-1)*(p3-1)
+d = gmpy2.invert(e,phi)
+```
+
+
+
 ## [NCTF2019]easyrsa【e，phi不互素】
 
 http://yulige.top/?p=752#easyRSA909pt_2solvers
@@ -884,7 +905,7 @@ $$
 
 已知
 $$
-N = p^2*q，d ∗ N = 1 \ m o d \ ( q − 1 ) ( p − 1 ) 
+N = p^2*q，d ∗ N = 1 \ m o d \ ( q − 1 ) ( p − 1 ) 
 $$
 由欧拉定理
 $$
@@ -896,3 +917,8 @@ k∗pq=a ^{N∗d}−a
 \\pq = gcd(a^{N*d} - a,N)
 $$
 因为a的取值可以是 a = 2,3,4,5…，这里方便计算我们取 2
+
+
+
+
+
