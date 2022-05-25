@@ -20,7 +20,7 @@
 
 ### DES
 
-- [ ] [CISCN2019]part_des【】
+- [x] [CISCN2019]part_des【n_enc+key->plaintext】
 
 ## [流密码](docs/stream.md)
 
@@ -33,7 +33,7 @@
 - [x] [CISCN2018]oldstreamgame【output+F->初始状态】
 - [x] [CISCN2020]lfsr【output->mask,B-M】
 
-## RSA
+## [RSA](docs/RSA.md)
 
 - [x] [GUET-CTF2019]Uncle Sam【c = m^n mod n】
 - [x] [CISCN2020] rsa【n=p1p2p3】
@@ -53,7 +53,7 @@
 - [x] [ACTF2018]花开藏宝地【boom】
 - [x] [UTCTF2020]Curveball【shamir】
 
-## 脑洞？！misc
+## [脑洞？！misc](docs/misc.md)
 
 - [x] [BSidesSF2019]slashslash【openssl+zip注释】
 - [x] [Zer0pts2020]ROR【奇偶性】

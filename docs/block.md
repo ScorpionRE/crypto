@@ -155,7 +155,7 @@ print(key)
 
 # DES
 
-## [CISCN2019]part_des【】
+## [CISCN2019]part_des【n_enc+key->m】
 
 ### 题目
 
@@ -166,3 +166,11 @@ Key map -> 0xe0be661032d5f0b676f82095e4d67623628fe6d376363183aed373a60167af537b4
 
 ### 解法
 
+`Round n part_encode` 为执行 n 轮 des 的中间结果，`Key map` 应为 des 的子密钥，要还原出明文只需进行 n 轮 des 加密的逆过程即可
+
+- 子密钥的选取，对于只进行了 n 轮的加密结果，解密时应依次使用密钥 n, n-1..., 1。
+- des 最后一轮后的操作，未完成的 des 没有交换左右两部分和逆初始置换，因此解密时我们应先对密文进行这两步操作
+
+
+
+https://ctf-wiki.org/crypto/blockcipher/des/#2019-ciscn-part_des
