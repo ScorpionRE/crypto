@@ -312,14 +312,14 @@ def wiener(e,n):
 
 #wiener attack (owiener库
 def owienerk(e,n):
-    e = 65537
-    n = 135789019
+
     d = owiener.attack(e, n)
 
     if d is None:
         print("Failed")
     else:
         print("Hacked d={}".format(d))
+        return d
 
 #给出具有相关性的一些式子，变形，然后求公因式，得到p/q
 def g():
