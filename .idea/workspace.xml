@@ -4,7 +4,7 @@
     <list default="true" id="7b72538f-e700-46a9-b36a-cf7130bfe9a2" name="Default Changelist" comment="output-&gt;mask,BM">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rsa.py" beforeDir="false" afterPath="$PROJECT_DIR$/Rsa.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/block.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/block.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ti.py" beforeDir="false" afterPath="$PROJECT_DIR$/ti.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

@@ -37,7 +37,8 @@
 
 - [x] [GUET-CTF2019]Uncle Sam【c = m^n mod n】
 - [x] [CISCN2020] rsa【n=p1p2p3】
-- [ ] [CISCN2020]bd【wiener】
+- [x] [CISCN2020]bd【wiener】
+- [x] [CISCN2019]Asymmetric【phi】
 
 
 
