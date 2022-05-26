@@ -1,17 +1,36 @@
-part_decode='1001001011011001000101010010010100000001000110011110000100101011'
-Key=['111000001011111001100110000100000011001011010101', '111100001011011001110110111110000010000010010101', '111001001101011001110110001000110110001010001111', '111001101101001101110110001101100011000110000011', '101011101101001101110011101001100000000101100111', '101011110101001101111011010001101010101111000010', '101011110101001111011001011101001000010101011001', '000111110101101111011001010010111001010001001010', '001111110100100111011001010010001001011111101010', '000111110110100110011101000111001101110000101001', '000111110010110110011101010010100101110001110000', '010111110010110010101101100010011110100100111000', '110110111010110010101100101000010101111000010000', '110110001010111010101110110110010000001000110110', '111100001011111000101110100101010100101010001100', '111100001011111010100110000100010010111010000100']
-rounds=16
-import DES
-while rounds>=0:
-    L=part_decode[:32]
-    R=part_decode[32:]
-    oriplain=''
+import binascii
+# open the public key and strip the spaces so we have a decent array
+fileKey = open("pub.Key", 'rb')
+pubKey = fileKey.read().replace(' ', '').replace('L', '').strip('[]').split(',')
+nbit = len(pubKey)
+# open the encoded message
+fileEnc = open("enc.txt", 'rb')
+encoded = fileEnc.read().replace('L', '')
+print("start")
+# create a large matrix of 0's (dimensions are public key length +1)
+A = Matrix(ZZ, nbit + 1, nbit + 1)
+# fill in the identity matrix
+for i in range(nbit):
+    A[i, i] = 1
+# replace the bottom row with your public key
+for i in range(nbit):
+    A[i, nbit] = pubKey[i]
+# last element is the encoded message
+A[nbit, nbit] = -int(encoded)
 
-    for i in range(rounds):
-        key=Key[rounds-i-1]
-        L,R=DES(L,R,key)
-    subplain=L+R
-    for i in range(len(IP_re)):
-        oriplain+=subplain[IP_re[i]-1]
-    print(rounds,long_to_bytes(int(oriplain,2)))
-    rounds-=1
+res = A.LLL()
+for i in range(0, nbit + 1):
+    # print solution
+    M = res.row(i).list()
+    flag = True
+    for m in M:
+        if m != 0 and m != 1:
+            flag = False
+            break
+    if flag:
+        print(i, M)
+        M = ''.join(str(j) for j in M)
+        # remove the last bit
+        M = M[:-1]
+        M = hex(int(M, 2))[2:-1]
+        print(M)
