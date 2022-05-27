@@ -194,3 +194,107 @@ for i in range(len(b)):
 print(ans)
 ```
 
+
+
+[还有一个从零开始猜filename的](https://spotless.tech/bsidessf-2020-decrypto%201.html)
+
+## [BSidesSF2020]decrypto-2
+
+### 题目
+
+```python
+import hashlib
+import struct
+import sys
+
+
+class Crypto:
+
+    def __init__(self, key):
+        if not isinstance(key, bytes):
+            raise TypeError('key must be of type bytes!')
+        self.key = key
+        self._buf = bytes()
+        self._out = open("/dev/stdout", "wb")
+
+    def _extend_buf(self):
+        self._buf += self.key
+
+    def get_bytes(self, nbytes):
+        while len(self._buf) < nbytes:
+            self._extend_buf()
+        ret, self._buf = self._buf[:nbytes], self._buf[nbytes:]
+        return ret
+
+    def encrypt(self, buf):
+        if not isinstance(buf, bytes):
+            raise TypeError('buf must be of type bytes!')
+        stream = self.get_bytes(len(buf))
+        return bytes(a ^ b for a, b in zip(buf, stream))
+
+    def set_outfile(self, fname):
+        self._out = open(fname, "wb")
+
+    def encrypt_file(self, fname):
+        buf = open(fname, "rb").read()
+        self._out.write(self.encrypt(buf))
+
+
+class HashCrypto(Crypto):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._blk = self.key
+        self._blkid = 0
+
+    def _extend_buf(self):
+        self._blk = hashlib.sha256(
+                self._blk + struct.pack('<I', self._blkid)).digest()
+        self._blkid += 1
+        self._buf += self._blk
+
+
+def main(argv):
+    if len(argv) not in (3, 4):
+        print("%s <key> <infile> [outfile]" % sys.argv[0])
+        return
+    argv.pop(0)
+    key = argv.pop(0)
+    inf = argv.pop(0)
+    crypter = HashCrypto(key.encode("utf-8"))
+    if sys.argv:
+        crypter.set_outfile(argv.pop(0))
+    crypter.encrypt_file(inf)
+
+
+if __name__ == '__main__':
+    main(sys.argv)
+
+```
+
+### 解法
+
+观察题目给出的代码，感觉和1类似，但是没有给出data的结构，但是svg等文件都是有固定格式的，如
+
+`<?xml version="1.0" encoding="UTF-8" ?>`等
+
+```python
+s=b'<?xml version="1.0" encoding="UTF-8"?>'
+f=open('flag.svg.enc','rb').read()
+import hashlib
+import struct
+sha0=bytes()
+x1=bytes(a^b for a,b in zip(s[:32],f[:32]))
+sha0+=x1
+temp=1
+for i in range(len(f)):
+    x1=hashlib.sha256(x1+struct.pack('<I',temp)).digest()
+    sha0+=x1
+    temp+=1
+flag=bytes(a^b for a,b in zip(sha0,f))
+print(flag)
+```
+
+ 
+
+https://ctftime.org/writeup/18520

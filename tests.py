@@ -1,23 +1,17 @@
-from Crypto.Util.number import *
-import sys
+s=b'<?xml version="1.0" encoding="UTF-8"?>'
+f=open('flag.svg.enc','rb').read()
 import hashlib
-import json
-fp=open("flag.txt.enc","rb")
-b=fp.read()
-fp.close()
-data = {
-            "filename": 'flag.txt',
-            "hash": ' ',
-            "plaintext":' '
-        }
-outbuf = json.dumps(data, sort_keys=True, indent=4)
-s=""
-for i in range(min(len(outbuf),len(b))):
-    s+=chr(b[i]^ord(outbuf[i]))
-print(s)
+import struct
+sha0=bytes()
+x1=bytes(a^b for a,b in zip(s[:32],f[:32]))
+sha0+=x1
+temp=1
+for i in range(len(f)):
+    x1=hashlib.sha256(x1+struct.pack('<I',temp)).digest()
+    sha0+=x1
+    temp+=1
+flag=bytes(a^b for a,b in zip(sha0,f))
+print(flag)
 
-key=b'n0t4=l4g'
-ans=''
-for i in range(len(b)):
-    ans+=chr(b[i]^key[i%len(key)])
-print(ans)
+#CTF{but_even_I_couldnt_break_IT}
+

@@ -18,8 +18,8 @@
 
 ## 
 
-- [ ] [BSidesSF2020]decrypto-1
-- [ ] 
+- [x] [BSidesSF2020]decrypto-1
+- [x] [BSidesSF2020]decrypto-2
 
 
 
