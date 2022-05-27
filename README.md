@@ -14,9 +14,12 @@
 
 
 
-## OTP
+## [XOR](docs/xor.md)
 
+## 
 
+- [ ] [BSidesSF2020]decrypto-1
+- [ ] 
 
 
 
@@ -34,7 +37,7 @@
 
 
 
-- [x] [CISCN2016]对称密码1【】~
+- [x] [CISCN2016]对称密码1【逆推、猜解】~
 - [ ] [CISCN2016]对称密码3【】
 
 
@@ -67,7 +70,7 @@
 
 ## 背包密码
 
-- [ ] [CISCN2017]classical【merkle-hellman、LLL】
+- [x] [CISCN2017]classical【merkle-hellman、LLL】~
 
 
 

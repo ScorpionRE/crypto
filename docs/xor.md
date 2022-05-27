@@ -1,3 +1,5 @@
+# XOR
+
 ## ?[AFCTF2018]你听过一次一密么？
 
 一次一密（One-Time-Pad）：xor key  明文多长，密文就多长（适合少量明文消息）
@@ -72,4 +74,123 @@ https://www.ruanx.net/many-time-pad/
 **词频分析**
 
 https://codeleading.com/article/68135872581/
+
+
+
+## [BSidesSF2020]decrypto-1【循环】
+
+### 题目
+
+说明.txt : 
+
+[Kerckhoffs's principle](https://en.wikipedia.org/wiki/Kerckhoffs%27s_principle) states that "A cryptosystem should be secure even if everything about the system, except the key, is public knowledge."  So here's our unbreakable cipher.
+
+
+
+flag.txt.enc
+
+decrypto.py
+
+```python
+import sys
+import json
+import hashlib
+
+
+class Crypto:
+
+    def __init__(self, key):
+        if not isinstance(key, bytes):
+            raise TypeError('key must be of type bytes!')
+        self.key = key
+        self._buf = bytes()
+        self._out = open("/dev/stdout", "wb")
+
+    def _extend_buf(self):
+        self._buf += self.key
+
+    def get_bytes(self, nbytes):
+        while len(self._buf) < nbytes:
+            self._extend_buf()
+        ret, self._buf = self._buf[:nbytes], self._buf[nbytes:]
+        return ret
+
+    def encrypt(self, buf):
+        if not isinstance(buf, bytes):
+            raise TypeError('buf must be of type bytes!')
+        stream = self.get_bytes(len(buf))
+        return bytes(a ^ b for a, b in zip(buf, stream))
+
+    def set_outfile(self, fname):
+        self._out = open(fname, "wb")
+
+    def encrypt_file(self, fname):
+        buf = open(fname, "rb").read()
+        self._out.write(self.encrypt(buf))
+
+
+class JSONCrypto(Crypto):
+
+    def encrypt_file(self, fname):
+        buf = open(fname, "r").read().strip()
+        h = hashlib.sha256(buf.encode('utf-8')).hexdigest()
+        data = {
+                "filename": fname,
+                "hash": h,
+                "plaintext": buf,
+        }
+        outbuf = json.dumps(data, sort_keys=True, indent=4)
+        self._out.write(self.encrypt(outbuf.encode("utf-8")))
+
+
+def main(argv):
+    if len(argv) not in (3, 4):
+        print("%s <key> <infile> [outfile]" % sys.argv[0])
+        return
+    argv.pop(0)
+    key = argv.pop(0)
+    inf = argv.pop(0)
+    crypter = JSONCrypto(key.encode("utf-8"))
+    if sys.argv:
+        crypter.set_outfile(argv.pop(0))
+    crypter.encrypt_file(inf)
+
+
+if __name__ == '__main__':
+    main(sys.argv)
+
+```
+
+
+
+### 解法
+
+先看加密过程：实际上是data和key之间的异或操作，所以主要还是需要得到key。
+
+一般来说，key不会太长、根据加密文档flag.txt.enc，推测被加密的filename为flag.txt，这样data的长度超过了15，所以可以构造data并与密文异或，观察key，可以发现出现了循环，那么这就很可能是key。
+
+最后用key和data异或，得到明文内容
+
+```python
+import json
+fp=open("flag.txt.enc","rb")
+b=fp.read()
+fp.close()
+data = {
+            "filename": 'flag.txt',
+            "hash": ' ',
+            "plaintext":' '
+        }
+outbuf = json.dumps(data, sort_keys=True, indent=4)
+s=""
+for i in range(min(len(outbuf),len(b))):
+    s+=chr(b[i]^ord(outbuf[i]))
+print(s)
+
+key=b'n0t4=l4g'
+ans=''
+for i in range(len(b)):
+    ans+=chr(b[i]^key[i%len(key)])
+print(ans)
+```
 
