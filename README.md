@@ -62,9 +62,9 @@
 
 
 
-## ECC
+## [离散对数](docs/discrete.md)
 
-
+- [x] [CISCN2018]crackme-java【Elgamal，多线程爆破r(int)】
 
 
 
