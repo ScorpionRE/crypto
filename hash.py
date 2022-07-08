@@ -64,6 +64,8 @@ def brute_sha256(flag,m):
                         print( chr(x)+chr(y)+chr(z) + chr(q) + flag)
                         return chr(x)+chr(y)+chr(z)+chr(q)
 
-flag="FMtjZVpaMr89wZAQ"
-m = "27383b68c880e4f39723208b7dc557fb3f7f2cde6631d8295030d8c241f010f4"
+
+flag="P1rBPgWVKeFo6bo1"
+m = "af494c242b3f0fc89304851e6333cd67b2a66971af318c1cbef4e63cc3704817"
+
 brute_sha256(flag,m)
