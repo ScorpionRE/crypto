@@ -194,9 +194,463 @@ def brute_e(c,d,n,p,q):
 # p1 = gmpy2.gcd(n1,n2)
 # q1 = n1/p1
 
+# 已知m高位， 求低位,sage
+
+# def High_m(high_m, n, c):
+#     R.<x> = PolynomialRing(Zmod(n), implementation='NTL')
+#     m = high_m + x
+#     M = m((m^3 - c).small_roots()[0])
+#     print(hex(int(M))[2:])
+#
+# n = 13112061820685643239663831166928327119579425830632458568801544406506769461279590962772340249183569437559394200635526183698604582385769381159563710823689417274479549627596095398621182995891454516953722025068926293512505383125227579169778946631369961753587856344582257683672313230378603324005337788913902434023431887061454368566100747618582590270385918204656156089053519709536001906964008635708510672550219546894006091483520355436091053866312718431318498783637712773878423777467316605865516248176248780637132615807886272029843770186833425792049108187487338237850806203728217374848799250419859646871057096297020670904211
+# c = 15987554724003100295326076036413163634398600947695096857803937998969441763014731720375196104010794555868069024393647966040593258267888463732184495020709457560043050577198988363754703741636088089472488971050324654162166657678376557110492703712286306868843728466224887550827162442026262163340935333721705267432790268517
+# high_m = 2519188594271759205757864486097605540135407501571078627238849443561219057751843170540261842677239681908736
+# High_m(high_m,n,c)
+
+# 已知p高位攻击,copper
+# sage
+# def High_p(high_p, pbits, n, c):
+#     k = pbits - high_p.nbits()  # 注意有的p低位变0后，这里计算不一定准，可以直接手动改k
+#     print(len)
+#     high_p = high_p << k
+#     R. < x > = PolynomialRing(Zmod(n))
+#     p = high_p + x
+#     x0 = p.small_roots(X=2 ^ k, beta=0.4)[0]
+#
+#     P = int(p(x0))
+#     Q = n // P
+#
+#     assert n == P * Q
+#     print(P)
+#     print(Q)
+#     d = inverse_mod(65537, (P - 1) * (Q - 1))
+#     print(hex(power_mod(c, d, n)))
+#
+#
+# n = 12784625729032789592766625203074018101354917751492952685083808825504221816847310910447532133616954262271205877651255598995305639194329607493047941212754523879402744065076183778452640602625242851184095546100200565113016690161053808950384458996881574266573992526357954507491397978278604102524731393059303476350167738237822647246425836482533150025923051544431330502522043833872580483142594571802189321599016725741260254170793393777293145010525686561904427613648184843619301241414264343057368192416551134404100386155751297424616254697041043851852081071306219462991969849123668248321130382231769250865190227630009181759219
+# c = 627824086157119245056478875800598959553774250161670787506083253960788230737588761787385686125828765665617567887904228030839535317987589608761534500003128247164233774794784231518212804270056404565710426613938264302998015421153393879729263551292024543756422702956470022959537221269172084619081368498693930550456153543628170306324206266216348386707008661128717431426237486511309767286175518238620230507201952867261283880986868752676549613958785288914989429224582849218395471672295410036858881836363364885164276983237312235831591858044908369376855484127614933545955544787160352042318378588039587911741028067576722790778
+# high_p = 97522826022187678545924975588711975512906538181361325096919121233043973599759518562689050415761485716705615149641768982838255403594331293651224395590747133152128042950062103156564440155088882592644046069208405360324372057140890317518802130081198060093576841538008960560391380395697098964411821716664506908672
+#
+# High_p(high_p, 1024, n, c)
 
 
+# 已知d低位，sage
+# def getFullP(low_p, kbits, n):
+#     R. < x > = PolynomialRing(Zmod(n))
+#     p = x * 2 ^ kbits + low_p
+#     nbits = n.nbits()
+#     root = (p - n).monic().small_roots(X=2 ^ (nbits // 2 - kbits), beta=0.3)
+#     if root:
+#         return p(root[0])
+#     return None
+#
+#
+# def Low_d(low_d, kbits, n, c):
+#     maybe_p = []
+#     for k in range(1, 4):
+#         p = var('p')
+#         p0 = solve_mod([3 * p * low_d == p + k * (n * p - p ^ 2 - n + p)], 2 ^ kbits)
+#         maybe_p += [int(x[0]) for x in p0]
+#     print(maybe_p)
+#
+#     for x in maybe_p:
+#         P = getFullP(x, kbits, n)
+#         if P: break
+#
+#     P = int(P)
+#     Q = n // P
+#
+#     assert P * Q == n
+#
+#     d = inverse_mod(3, (P - 1) * (Q - 1))
+#     print(hex(power_mod(c, d, n))[2:])
+#
+#
+# n = 92896523979616431783569762645945918751162321185159790302085768095763248357146198882641160678623069857011832929179987623492267852304178894461486295864091871341339490870689110279720283415976342208476126414933914026436666789270209690168581379143120688241413470569887426810705898518783625903350928784794371176183
+# c = 56164378185049402404287763972280630295410174183649054805947329504892979921131852321281317326306506444145699012788547718091371389698969718830761120076359634262880912417797038049510647237337251037070369278596191506725812511682495575589039521646062521091457438869068866365907962691742604895495670783101319608530
+# low_d = 787673996295376297668171075170955852109814939442242049800811601753001897317556022653997651874897208487913321031340711138331360350633965420642045383644955
+# kbits = 512
+# # kbits = n.nbits() - low_d.nbits() - 1
+# Low_d(low_d, kbits, n, c)
 
+# Copper: Related Message Attack   M1 = f(M2) =  a*M2 + b
+# n = 113604829563460357756722229849309932731534576966155520277171862442445354404910882358287832757024693652075211204635679309777620586814014894544893424988818766425089667672311645586528776360047956843961901352792631908859388801090108188344342619580661377758180391734771694803991493164412644148805229529911069578061
+# c1 = 112992730284209629010217336632593897028023711212853788739137950706145189880318698604512926758021533447981943498594790549326550460216939216988828130624120379925895123186121819609415184887470233938291227816332249857236198616538782622327476603338806349004620909717360739157545735826670038169284252348037995399308
+# c2 = 112992730284209629010217336632593897028023711212853788739137950706145189880318698604512926758021552486915464025361447529153776277710423467951041523831865232164370127602772602643378592695459331174613894578701940837730590029577336924367384969935652616989527416027725713616493815764725131271563545176286794438175
+# e = 3
+#
+# # c1 = m^e
+# # c2 = (m+1)^e
+#
+# R.<x> = PolynomialRing(Zmod(n))
+# g1 = x^e - c1
+# g2 = (x+1)^e - c2
+#
+# def myGcd(x, y):
+#     if y == 0:
+#         return x.monic()
+#     return myGcd(y, x%y)
+#
+# v = myGcd(g2, g1)
+# M = n - v.coefficients()[0]
+#
+# assert g1(M) == 0
+# print(hex(M))
+
+# related_message_attack： e=3的特殊情况
+def related_message_attack(a,b,c1,c2):
+    m2 = b/a * ((c1+2*pow(a,3)*c2-pow(b,3))/(c1-pow(a,3)*c2+2*pow(b,3)))
+    m2 = gmpy2.mpz(m2)
+    # print(gmpy2.mpz(m2))
+    print(hex(m2))
+    return m2
+
+### boneh and Durfee, d < N^0.292(delta  LLL attack
+
+# import time
+#
+# """
+# Setting debug to true will display more informations
+# about the lattice, the bounds, the vectors...
+# """
+# debug = True
+#
+# """
+# Setting strict to true will stop the algorithm (and
+# return (-1, -1)) if we don't have a correct
+# upperbound on the determinant. Note that this
+# doesn't necesseraly mean that no solutions
+# will be found since the theoretical upperbound is
+# usualy far away from actual results. That is why
+# you should probably use `strict = False`
+# """
+# strict = False
+#
+# """
+# This is experimental, but has provided remarkable results
+# so far. It tries to reduce the lattice as much as it can
+# while keeping its efficiency. I see no reason not to use
+# this option, but if things don't work, you should try
+# disabling it
+# """
+# helpful_only = True
+# dimension_min = 7  # stop removing if lattice reaches that dimension
+#
+#
+# ############################################
+# # Functions
+# ##########################################
+#
+# # display stats on helpful vectors
+# def helpful_vectors(BB, modulus):
+#     nothelpful = 0
+#     for ii in range(BB.dimensions()[0]):
+#         if BB[ii, ii] >= modulus:
+#             nothelpful += 1
+#
+#     print(nothelpful, "/", BB.dimensions()[0], " vectors are not helpful")
+#
+#
+# # display matrix picture with 0 and X
+# def matrix_overview(BB, bound):
+#     for ii in range(BB.dimensions()[0]):
+#         a = ('%02d ' % ii)
+#         for jj in range(BB.dimensions()[1]):
+#             a += '0' if BB[ii, jj] == 0 else 'X'
+#             if BB.dimensions()[0] < 60:
+#                 a += ' '
+#         if BB[ii, ii] >= bound:
+#             a += '~'
+#         print(a)
+#
+#
+# # tries to remove unhelpful vectors
+# # we start at current = n-1 (last vector)
+# def remove_unhelpful(BB, monomials, bound, current):
+#     # end of our recursive function
+#     if current == -1 or BB.dimensions()[0] <= dimension_min:
+#         return BB
+#
+#     # we start by checking from the end
+#     for ii in range(current, -1, -1):
+#         # if it is unhelpful:
+#         if BB[ii, ii] >= bound:
+#             affected_vectors = 0
+#             affected_vector_index = 0
+#             # let's check if it affects other vectors
+#             for jj in range(ii + 1, BB.dimensions()[0]):
+#                 # if another vector is affected:
+#                 # we increase the count
+#                 if BB[jj, ii] != 0:
+#                     affected_vectors += 1
+#                     affected_vector_index = jj
+#
+#             # level:0
+#             # if no other vectors end up affected
+#             # we remove it
+#             if affected_vectors == 0:
+#                 print("* removing unhelpful vector", ii)
+#                 BB = BB.delete_columns([ii])
+#                 BB = BB.delete_rows([ii])
+#                 monomials.pop(ii)
+#                 BB = remove_unhelpful(BB, monomials, bound, ii - 1)
+#                 return BB
+#
+#             # level:1
+#             # if just one was affected we check
+#             # if it is affecting someone else
+#             elif affected_vectors == 1:
+#                 affected_deeper = True
+#                 for kk in range(affected_vector_index + 1, BB.dimensions()[0]):
+#                     # if it is affecting even one vector
+#                     # we give up on this one
+#                     if BB[kk, affected_vector_index] != 0:
+#                         affected_deeper = False
+#                 # remove both it if no other vector was affected and
+#                 # this helpful vector is not helpful enough
+#                 # compared to our unhelpful one
+#                 if affected_deeper and abs(bound - BB[affected_vector_index, affected_vector_index]) < abs(
+#                         bound - BB[ii, ii]):
+#                     print("* removing unhelpful vectors", ii, "and", affected_vector_index)
+#                     BB = BB.delete_columns([affected_vector_index, ii])
+#                     BB = BB.delete_rows([affected_vector_index, ii])
+#                     monomials.pop(affected_vector_index)
+#                     monomials.pop(ii)
+#                     BB = remove_unhelpful(BB, monomials, bound, ii - 1)
+#                     return BB
+#     # nothing happened
+#     return BB
+#
+#
+# """
+# Returns:
+# * 0,0   if it fails
+# * -1,-1 if `strict=true`, and determinant doesn't bound
+# * x0,y0 the solutions of `pol`
+# """
+#
+#
+# def boneh_durfee(pol, modulus, mm, tt, XX, YY):
+#     """
+#     Boneh and Durfee revisited by Herrmann and May
+#
+#     finds a solution if:
+#     * d < N^delta
+#     * |x| < e^delta
+#     * |y| < e^0.5
+#     whenever delta < 1 - sqrt(2)/2 ~ 0.292
+#     """
+#
+#     # substitution (Herrman and May)
+#     PR. < u, x, y > = PolynomialRing(ZZ)
+#     Q = PR.quotient(x * y + 1 - u)  # u = xy + 1
+#     polZ = Q(pol).lift()
+#
+#     UU = XX * YY + 1
+#
+#     # x-shifts
+#     gg = []
+#     for kk in range(mm + 1):
+#         for ii in range(mm - kk + 1):
+#             xshift = x ^ ii * modulus ^ (mm - kk) * polZ(u, x, y) ^ kk
+#             gg.append(xshift)
+#     gg.sort()
+#
+#     # x-shifts list of monomials
+#     monomials = []
+#     for polynomial in gg:
+#         for monomial in polynomial.monomials():
+#             if monomial not in monomials:
+#                 monomials.append(monomial)
+#     monomials.sort()
+#
+#     # y-shifts (selected by Herrman and May)
+#     for jj in range(1, tt + 1):
+#         for kk in range(floor(mm / tt) * jj, mm + 1):
+#             yshift = y ^ jj * polZ(u, x, y) ^ kk * modulus ^ (mm - kk)
+#             yshift = Q(yshift).lift()
+#             gg.append(yshift)  # substitution
+#
+#     # y-shifts list of monomials
+#     for jj in range(1, tt + 1):
+#         for kk in range(floor(mm / tt) * jj, mm + 1):
+#             monomials.append(u ^ kk * y ^ jj)
+#
+#     # construct lattice B
+#     nn = len(monomials)
+#     BB = Matrix(ZZ, nn)
+#     for ii in range(nn):
+#         BB[ii, 0] = gg[ii](0, 0, 0)
+#         for jj in range(1, ii + 1):
+#             if monomials[jj] in gg[ii].monomials():
+#                 BB[ii, jj] = gg[ii].monomial_coefficient(monomials[jj]) * monomials[jj](UU, XX, YY)
+#
+#     # Prototype to reduce the lattice
+#     if helpful_only:
+#         # automatically remove
+#         BB = remove_unhelpful(BB, monomials, modulus ^ mm, nn - 1)
+#         # reset dimension
+#         nn = BB.dimensions()[0]
+#         if nn == 0:
+#             print("failure")
+#             return 0, 0
+#
+#     # check if vectors are helpful
+#     if debug:
+#         helpful_vectors(BB, modulus ^ mm)
+#
+#     # check if determinant is correctly bounded
+#     det = BB.det()
+#     bound = modulus ^ (mm * nn)
+#     if det >= bound:
+#         print("We do not have det < bound. Solutions might not be found.")
+#         print("Try with highers m and t.")
+#         if debug:
+#             diff = (log(det) - log(bound)) / log(2)
+#             print("size det(L) - size e^(m*n) = ", floor(diff))
+#         if strict:
+#             return -1, -1
+#     else:
+#         print("det(L) < e^(m*n) (good! If a solution exists < N^delta, it will be found)")
+#
+#     # display the lattice basis
+#     if debug:
+#         matrix_overview(BB, modulus ^ mm)
+#
+#     # LLL
+#     if debug:
+#         print("optimizing basis of the lattice via LLL, this can take a long time")
+#
+#     BB = BB.LLL()
+#
+#     if debug:
+#         print("LLL is done!")
+#
+#     # transform vector i & j -> polynomials 1 & 2
+#     if debug:
+#         print("looking for independent vectors in the lattice")
+#     found_polynomials = False
+#
+#     for pol1_idx in range(nn - 1):
+#         for pol2_idx in range(pol1_idx + 1, nn):
+#             # for i and j, create the two polynomials
+#             PR. < w, z > = PolynomialRing(ZZ)
+#             pol1 = pol2 = 0
+#             for jj in range(nn):
+#                 pol1 += monomials[jj](w * z + 1, w, z) * BB[pol1_idx, jj] / monomials[jj](UU, XX, YY)
+#                 pol2 += monomials[jj](w * z + 1, w, z) * BB[pol2_idx, jj] / monomials[jj](UU, XX, YY)
+#
+#             # resultant
+#             PR. < q > = PolynomialRing(ZZ)
+#             rr = pol1.resultant(pol2)
+#
+#             # are these good polynomials?
+#             if rr.is_zero() or rr.monomials() == [1]:
+#                 continue
+#             else:
+#                 print("found them, using vectors", pol1_idx, "and", pol2_idx)
+#                 found_polynomials = True
+#                 break
+#         if found_polynomials:
+#             break
+#
+#     if not found_polynomials:
+#         print("no independant vectors could be found. This should very rarely happen...")
+#         return 0, 0
+#
+#     rr = rr(q, q)
+#
+#     # solutions
+#     soly = rr.roots()
+#
+#     if len(soly) == 0:
+#         print("Your prediction (delta) is too small")
+#         return 0, 0
+#
+#     soly = soly[0][0]
+#     ss = pol1(q, soly)
+#     solx = ss.roots()[0][0]
+#
+#     #
+#     return solx, soly
+#
+#
+# def example():
+#     ############################################
+#     # How To Use This Script
+#     ##########################################
+#
+#     #
+#     # The problem to solve (edit the following values)
+#     #
+#
+#     # the modulus
+#     N = 0xbadd260d14ea665b62e7d2e634f20a6382ac369cd44017305b69cf3a2694667ee651acded7085e0757d169b090f29f3f86fec255746674ffa8a6a3e1c9e1861003eb39f82cf74d84cc18e345f60865f998b33fc182a1a4ffa71f5ae48a1b5cb4c5f154b0997dc9b001e441815ce59c6c825f064fdca678858758dc2cebbc4d27
+#     # the public exponent
+#     e = 0x11722b54dd6f3ad9ce81da6f6ecb0acaf2cbc3885841d08b32abc0672d1a7293f9856db8f9407dc05f6f373a2d9246752a7cc7b1b6923f1827adfaeefc811e6e5989cce9f00897cfc1fc57987cce4862b5343bc8e91ddf2bd9e23aea9316a69f28f407cfe324d546a7dde13eb0bd052f694aefe8ec0f5298800277dbab4a33bb
+#
+#     # the hypothesis on the private exponent (the theoretical maximum is 0.292)
+#     delta = 0.280  # this means that d < N^delta
+#
+#     #
+#     # Lattice (tweak those values)
+#     #
+#
+#     # you should tweak this (after a first run), (e.g. increment it until a solution is found)
+#     m = 4  # size of the lattice (bigger the better/slower)
+#
+#     # you need to be a lattice master to tweak these
+#     t = int((1 - 2 * delta) * m)  # optimization from Herrmann and May
+#     X = 2 * floor(N ^ delta)  # this _might_ be too much
+#     Y = floor(N ^ (1 / 2))  # correct if p, q are ~ same size
+#
+#     #
+#     # Don't touch anything below
+#     #
+#
+#     # Problem put in equation
+#     P. < x, y > = PolynomialRing(ZZ)
+#     A = int((N + 1) / 2)
+#     pol = 1 + x * (A + y)
+#
+#     #
+#     # Find the solutions!
+#     #
+#
+#     # Checking bounds
+#     if debug:
+#         print("=== checking values ===")
+#         print("* delta:", delta)
+#         print("* delta < 0.292", delta < 0.292)
+#         print("* size of e:", int(log(e) / log(2)))
+#         print("* size of N:", int(log(N) / log(2)))
+#         print("* m:", m, ", t:", t)
+#
+#     # boneh_durfee
+#     if debug:
+#         print("=== running algorithm ===")
+#         start_time = time.time()
+#
+#     solx, soly = boneh_durfee(pol, e, m, t, X, Y)
+#
+#     # found a solution?
+#     if solx > 0:
+#         print("=== solution found ===")
+#         if False:
+#             print("x:", solx)
+#             print("y:", soly)
+#
+#         d = int(pol(solx, soly) / e)
+#         print("private key found:", d)
+#     else:
+#         print("=== no solution was found ===")
+#
+#     if debug:
+#         print("=== %s seconds ===" % (time.time() - start_time))
+#
+#
+# if __name__ == "__main__":
+#     example()
 
 #d泄露，遍历
 #p,q是1024位的,因此两者相乘不低于2048位,通过运算可知ed-1为2064位,因此k一定小于16位
@@ -273,8 +727,7 @@ def rabin(e,p,q,n,c):
 
 #wiener attack 连分数攻击
 #求渐进分数
-N1 = 1628
-N2 = 321
+
 #求连分数的项
 def continuedfra(x,y):
     cf = []
@@ -296,7 +749,7 @@ def getit(c):
         cf.append(simplify(c[:i]))
     return cf
 
-def wiener(e,n):
+def wiener(N1,N2):
     cf = []
     for (Q2,Q1) in getit(cf):
         if Q1 == 0:
@@ -306,7 +759,7 @@ def wiener(e,n):
     print("not found")
     return 0
 
-#Q1 = wiener(N1,N2)
+#Q1 = wiener(e,n)
 
 
 

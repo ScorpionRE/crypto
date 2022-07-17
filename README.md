@@ -16,7 +16,7 @@
 
 ## [XOR](docs/xor.md)
 
-## 
+
 
 - [x] [BSidesSF2020]decrypto-1
 - [x] [BSidesSF2020]decrypto-2
@@ -59,6 +59,7 @@
 - [x] [CISCN2020] rsa【n=p1p2p3】
 - [x] [CISCN2020]bd【wiener】
 - [x] [CISCN2019]Asymmetric【phi】
+- [x] [强网杯2019]Copperstudy【Copper】
 
 
 
