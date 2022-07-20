@@ -51,7 +51,10 @@
 ### LFSR
 
 - [x] [CISCN2018]oldstreamgame【output+F->初始状态】
+
 - [x] [CISCN2020]lfsr【output->mask,B-M】
+
+  
 
 ## [RSA](docs/RSA.md)
 

@@ -1277,6 +1277,10 @@ y 的估计用到了 p、q 比较均匀的假设。这里 delta 为预估的小�
 
 https://weichujian.github.io/2020/05/27/rsa%E5%B7%B2%E7%9F%A5%E9%AB%98%E4%BD%8D%E6%94%BB%E5%87%BB1/
 
+https://www.ruanx.net/coppersmith/
+
+
+
 # 理论
 
 ## Fermat Attack 

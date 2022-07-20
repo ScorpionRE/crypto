@@ -1,6 +1,6 @@
 # Elgamal
 
-## [CISCN2018]crackme-java
+## [CISCN2018]crackme-java【r爆破】
 
 ### 题目
 
@@ -59,10 +59,55 @@ public class crackme_java {
 
 ELGamal算法
 
-**加密过程**
+加密过程
 
-Alice选取随机数r, 同时将明文val全部转换为小写字母并转换为36进制 bval。
+Alice选取随机数r, g为2， 同时将明文val全部转换为小写字母并转换为36进制 bval。
+
+加密得到密文ret[0]（y1）, ret[1] (y2)
 $$
-Ek
+Ek（m,r)=(y1,y2)
+\\ y1 = 2^r mod \ p
+\\ y2 = (h^r \ mod \ p) *M
 $$
-密文ret[0] (C1), ret[1] (C2), 
+解密，其中x为私钥，我们是不知道的
+$$
+s = (y1^x \ mod \ p)^{-1} mod \ p
+\\ M = (y2 * s) mod \ p
+$$
+但是可以发现h,p,y1,y2都是已知的，只有r是未知的，知道r明文可以表示为
+$$
+M = y2 /pow(h,r,p)
+$$
+而r是int范围内的随机数，共32位，所以可以直接爆破
+
+多线程爆破
+
+32个线程，每个从i * 2^26到(i+1) * 2^26
+
+```python
+from threading import Thread
+
+p=11360738295177002998495384057893129964980131806509572927886675899422214174408333932150813939357279703161556767193621832795605708456628733877084015367497711
+c1=int('a9hgrei38ez78hl2kkd6nvookaodyidgti7d9mbvctx3jjniezhlxs1b1xz9m0dzcexwiyhi4nhvazhhj8dwb91e7lbbxa4ieco',36)
+
+def calr(r0,pid):
+    print("[Process%d]: start from %d" % (pid, r0))
+    while r0 < 2**26*(pid+1):
+        if pow(2,r0,p) == c1:
+            f = open('r','w')
+            f.write(r0)
+            exit(0)
+        r0+=1
+        if r0 % 2**18 == 0:
+            print('[Process%d]: now %d' % (pid, r0))
+    print('[Process%d]: exited!' % pid)
+
+for i in range(0,32):
+    t = Thread(target=calr,args=(i*2**26,i))
+    t.start()
+
+```
+
+得到r为152351913
+
+base36实现十进制转36进制（base36.dumps(c2//pow(h,r,p))	
