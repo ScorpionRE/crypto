@@ -266,7 +266,7 @@ $$
 state[101] =  mask[100]*state[100] + mask[99]*state[99] + ... + mask[1]*state[1]
 \\ state[102] =  mask[101]*state[101] + mask[100]*state[100]+...+mask[1]*state[2]
 \\...
-\\sate[200] = mask[100]*state[199] + mask[99]*state[198]+...+mask[1]*state[100]
+\\sate[200] = mask[100]*state[199] + mask[99]*state[198]+...+mask[1]*state[100]
 $$
 方程组的问题可以转化为矩阵求逆的问题。把 lfsr 的状态一行一行地写在矩阵上，形成的矩阵记为 M. 把 lsfr 每次所生成的结果也拼成一个向量，记为 T. 
 
@@ -307,3 +307,84 @@ def BM(output,length):
 ```
 
 https://www.codeleading.com/article/58654807383/
+
+
+
+## [De1CTF2019]Babylfsr
+
+### 题目
+
+task.py 与output文件
+
+KEY，FLAG，MASK均未知
+
+但已知flag[7:11]为1224，开头为de1ctf
+
+KEY和MASK长度均为256
+
+填充方式为不足八位的在前面加0
+
+
+
+### 解法
+
+根据BM算法，至少需要知道2*MASK.bitlength（即2 * 256 =512位）长的输出序列，才可以推测出初始seed
+
+而题目给出的输出序列只有504位，所以未知的8个二进制位可以通过爆破得到，然后根据flag[7:11]为1224筛选得到
+
+```python
+# key为输出序列前n（mask.bitlength)位,已知输出序列和mask，逆推求seed
+def get_key(mask,key):
+    R = ""
+    index = 0
+    key = key[255] + key[:256]
+    while index < 256:
+        tmp = 0
+        for i in range(256):
+            if mask >> i & 1:
+                # tmp ^= int(key[255 - i])
+                tmp = (tmp+int(key[255-i]))%2
+        R = str(tmp) + R
+        index += 1
+        key = key[255] + str(tmp) + key[1:255]
+    return int(R,2)
+
+# 将二进制流转化为十进制
+def get_int(x):
+    m=''
+    for i in range(256):
+        m += str(x[i])
+    return (int(m,2))
+
+# 输出序列output不够2n长度，爆破后面几位
+import hashlib
+import itertools
+
+
+# 输出序列r
+r = '001010010111101000001101101111010000001111011001101111011000100001100011111000010001100101110110011000001100111010111110000000111011000110111110001110111000010100110010011111100011010111101101101001110000010111011110010110010011101101010010100101011111011001111010000000001011000011000100000101111010001100000011010011010111001010010101101000110011001110111010000011010101111011110100011110011010000001100100101000010110100100100011001000101010001100000010000100111001110110101000000101011100000001100010'
+def pad(sz):
+    rr = [int(i) for i in r] + sz
+    M = matrix(GF(2),256,256)
+    X = vector(GF(2),256)
+    for i in range(256):
+        M[i] = rr[i:i+256]
+        X[i] = rr[i+256]
+    try:
+        m = M.inverse()*X
+        seed = get_key(get_int(m),r[:256])
+        seed = hex(seed)[2:]
+        sha = hashlib.sha256(seed.encode()).hexdigest()
+        if sha[:4] == '1224':
+            print('de1ctf{' + sha + '}')
+            exit()
+    except:
+        return
+
+for i in itertools.product([0,1],repeat = 8):
+    pad(list(i))
+
+```
+
+
+

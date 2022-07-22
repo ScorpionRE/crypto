@@ -54,6 +54,8 @@
 
 - [x] [CISCN2020]lfsr【output->mask,B-M】
 
+- [x] [De1CTF2019]Babylfsr【B-M,output<2N】
+
   
 
 ## [RSA](docs/RSA.md)
