@@ -37,18 +37,17 @@ import hashlib
 #                 print (s)       #输出密文
 
 #三位爆破
-# flag="de54015e59c7b"
-# m = "69eaae8b278cf1deb43c379be05c06447f37c94090234af2751d3dab1266e36e"
-# for x in range(21,127):
-#     for y in range(21,127):
-#         for z in range(21,127):
-#
-#             w=hashlib.sha256(str(flag + chr(x) + chr(y) + chr(z)  ).encode("utf-8"))
-#             w0=w.hexdigest()
-#
-#             if(w0==m):
-#                 print(flag + chr(x)+chr(y)+chr(z) )
-#                 break
+def brute_sha3(flag,m):
+    for x in range(21,127):
+        for y in range(21,127):
+            for z in range(21,127):
+
+                w=hashlib.sha256(str(chr(x) + chr(y) + chr(z) +flag ).encode("utf-8"))
+                w0=w.hexdigest()
+
+                if(w0==m):
+                    print( chr(x)+chr(y)+chr(z) + flag )
+                    break
 
 
 #sha256爆破
@@ -79,9 +78,9 @@ def brute_urandom_sha256(prefix,hash):
                     print(pre + bytes(chr(x),encoding = 'utf-8') +bytes(chr(y),encoding = 'utf-8') + bytes(chr(z),encoding = 'utf-8'))
                     return chr(x) + chr(y) + chr(z)
 
-flag="P1rBPgWVKeFo6bo1"
-hash = "af494c242b3f0fc89304851e6333cd67b2a66971af318c1cbef4e63cc3704817"
+flag="FD8KFjTp1T89Be9SW"
+hash = "535b46f5b8bb27a74e54d7104c712905e17ca7d330f8424498dceae3bcee503e"
 
 # brute_sha256(flag,m)
 # brute_urandom_sha256(0x88b204570b,'8eab34f25ad44b972393295e3757d1ebcdb977055483a3cdab38ce8bb768e439')
-print(hex(9849940106913545081))
+brute_sha3(flag,hash)

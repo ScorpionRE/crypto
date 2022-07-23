@@ -1,3 +1,5 @@
+import itertools
+
 import gmpy2
 import sympy
 
@@ -103,16 +105,88 @@ from sympy.ntheory.modular import crt
 # a = [1]
 
 # 极限
-x = sympy.Symbol('x')
-f = (x**2 -3*x + 2)/(x**2-4)
-print(sympy.limit(f,x,2))
+# x = sympy.Symbol('x')
+# f = (x**2 -3*x + 2)/(x**2-4)
+# print(sympy.limit(f,x,2))
+#
+# # 积分
+# f = sympy.exp(x)*(4+sympy.exp(x))**2
+# print(sympy.integrate(f,(x,0,sympy.ln(2))))
+#
+# f2 = (1 + 5*sympy.ln(x))/x
+# print(sympy.integrate(f2,(x,1,sympy.exp(1))))
+#
+# f3 = x*sympy.sin(x)
+# print(sympy.integrate(f3,(x,0,sympy.pi/2)))
 
-# 积分
-f = sympy.exp(x)*(4+sympy.exp(x))**2
-print(sympy.integrate(f,(x,0,sympy.ln(2))))
+# DFS，已知a，b的积n，异或结果x，求a，b。 len为a，b的比特位
+def dfs(n,x,len):
+    a_list, b_list = [0], [0]
 
-f2 = (1 + 5*sympy.ln(x))/x
-print(sympy.integrate(f2,(x,1,sympy.exp(1))))
+    round = 1
+    for i in range(len):  # 已知a和b的低n(512)位的异或结果
+        round *= 2
+        nxt_as, nxt_bs = [], []
+        for al, bl in zip(a_list, b_list):
+            for ah, bh in itertools.product([0, 1], repeat=2):
+                aa, bb = ah * (round // 2) + al, bh * (round // 2) + bl
+                if ((aa * bb % round == n % round) and ((aa ^ bb) == x % round)):
+                    nxt_as.append(aa)
+                    nxt_bs.append(bb)
 
-f3 = x*sympy.sin(x)
-print(sympy.integrate(f3,(x,0,sympy.pi/2)))
+        a_list, b_list = nxt_as, nxt_bs
+
+    for a, b in zip(a_list, b_list):
+        if (a * b == n):
+            break
+
+    print(a)
+    print(b)
+    return a,b
+
+
+
+def dfs2(x,n,len):
+    a_list, b_list, aa_list, bb_list = [0], [0], [0], [0]
+
+    x1_bits = [int(x) for x in f'{x:0512b}'[::-1]]
+
+    cur_mod = 1
+    for i in range(len//2):  # 分别从高位和低位 逐位更新，所以只需要n/2次
+        cur_mod *= 2
+        nxt_as, nxt_bs, nxt_aas, nxt_bbs = [], [], [], []
+        for al, bl, a2, b2 in zip(a_list, b_list, aa_list, bb_list):
+            for ah, bh, ah2, bh2 in itertools.product([0, 1], repeat=4):
+                aa, bb, aa2, bb2 = ah * (cur_mod // 2) + al, bh * (cur_mod // 2) + bl, ah2 * (cur_mod // 2) + a2, bh2 * (
+                            cur_mod // 2) + b2
+                bb2_rev = f'{bb2:0512b}'[::-1]
+                bb2_rev = int(bb2_rev, 2)
+                aa2_rev = f'{aa2:0512b}'[::-1]
+                aa2_rev = int(aa2_rev, 2)
+
+                gujie = '0' * (i + 1) + '1' * (510 - 2 * i) + '0' * (i + 1)
+                gujie = int(gujie, 2)
+                if ((aa * bb % cur_mod == n % cur_mod) and ((ah ^ bh2) == x1_bits[i]) and (
+                        ah2 ^ bh == x1_bits[511 - i]) and ((aa2_rev + aa) * (bb2_rev + bb) <= n) and (
+                        (aa2_rev + aa + gujie) * (bb2_rev + bb + gujie) >= n)):
+                    nxt_as.append(aa)
+                    nxt_bs.append(bb)
+                    nxt_aas.append(aa2)
+                    nxt_bbs.append(bb2)
+
+        a_list, b_list, aa_list, bb_list = nxt_as, nxt_bs, nxt_aas, nxt_bbs
+
+    for a, b, aa2, bb2 in zip(a_list, b_list, aa_list, bb_list):
+        aa2_rev = f'{aa2:0512b}'[::-1]
+        aa2_rev = int(aa2_rev, 2)
+        bb2_rev = f'{bb2:0512b}'[::-1]
+        bb2_rev = int(bb2_rev, 2)
+        a = aa2_rev + a
+        b = bb2_rev + b
+        if (a * b == n):
+            break
+
+    print(a)
+    print(b)
+    print(a*b==n)
+    return a,b

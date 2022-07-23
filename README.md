@@ -7,6 +7,10 @@
 
 - [x] [CISCN 2019]puzzles【综合】
 
+- [x] [GKCTF2021]XOR【dfs】
+
+  
+
 
 ##  古典
 
@@ -15,8 +19,6 @@
 
 
 ## [XOR](docs/xor.md)
-
-
 
 - [x] [BSidesSF2020]decrypto-1
 - [x] [BSidesSF2020]decrypto-2
@@ -32,10 +34,6 @@
 ### DES
 
 - [x] [CISCN2019]part_des【n_enc+key->plaintext】
-
-
-
-
 
 - [x] [CISCN2016]对称密码1【逆推、猜解】~
 - [ ] [CISCN2016]对称密码3【】
