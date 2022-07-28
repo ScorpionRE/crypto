@@ -66,6 +66,10 @@
 
 
 
+
+
+
+
 ## [离散对数](docs/discrete.md)
 
 - [x] [CISCN2018]crackme-java【Elgamal，多线程爆破r(int)】
@@ -76,6 +80,11 @@
 
 - [x] [CISCN2017]classical【merkle-hellman、LLL】~
 
+
+
+## [格](docs/lattice.md)
+
+- [x] [watevr2019]baby RLWE【RLWE】
 
 
 ## [秘密共享](docs/secrect_sharing.md)

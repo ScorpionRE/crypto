@@ -51,7 +51,7 @@ def make_cake():
     num = 14 
     for i in range(num): 
         print("Getting the {} / {} d".format(str(i + 1), str(num))) 
-        io = remote('node4.buuoj.cn', 25383)
+        io = remote('node4.buuoj.cn', 28602)
         proof_of_work(io) 
         io.sendafter('What\'s your choice?\n', '2\n') 
         io.recvline() 
@@ -79,13 +79,13 @@ def get_ans(q,h,e, N, ct):
         if p > 1 and p < N: 
             return pow(ct, invert(0x10001, (p - 1) * (N//p - 1)), N) 
 def eat_cake(e): 
-    io = remote('node4.buuoj.cn', 25383)
+    io = remote('node4.buuoj.cn', 28602)
     proof_of_work(io) 
     io.sendafter('What\'s your choice?\n', '1\n') 
     io.recvline() 
-    q, h, c = [int(x) for x in io.recvline(keepends = False).decode().split(' ')] 
-    N = int(io.recvline(keepends = False)) 
-    ct = int(io.recvline(keepends = False)) 
+    q, h, c = [int(x) for x in io.recvline(keepends = False).decode().split(' ')]
+    N = int(io.recvline(keepends = False))
+    ct = int(io.recvline(keepends = False))
     ans = get_ans(q ,h , e, N, ct) 
     io.recvuntil("Give me your cake:") 
     io.sendline(str(ans)) 

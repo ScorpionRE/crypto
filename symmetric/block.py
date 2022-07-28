@@ -87,7 +87,7 @@ from Crypto.Util.number import *
 #     print(flag)
 
 # DES,Kn泄露
-from DES import *
+from symmetric.DES import *
 from itertools import product
 
 guess_8bit = list(product(range(2), repeat=8))
