@@ -1,6 +1,38 @@
 import codecs
 import string
 from itertools import cycle
+from z3 import *
+#z3-solver，已知部分明文和密文，用z3-solver建立方程，爆破key，并尝试其是否为正确的key
+def z3key(out,plain):
+    #out.append((out[i+1] + ((out[i] * ord(plaintext[i])) ^ (key+out[i+1]))) ^ (key*out[i]))
+    for count in range(2,78):
+        key=BitVec('key',count)
+        s=Solver()
+        for i in range(8):
+            s.add(((out[i + 1] + ((out[i] * ord(plain[i])) ^ (key + out[i + 1]))) ^ (key * out[i]))==out[i+2])
+        s.check()
+        res=s.model()
+        print(res)
+        res = res[key].as_long().real
+        print(res)
+        f=open('conversation','r').readlines()
+        x=[]
+        for j in f:
+            x.append(j.strip())
+        flag=''
+        for j in range(1,len(x),2):
+            li=x[j].split(' ')
+            for k in range(1,len(li)):
+                li[k]=eval(li[k])
+            for k in range(1,len(li)-2):
+                try:
+                    flag += chr(((res + li[k + 1]) ^ (((res * li[k]) ^ li[k + 2]) - li[k + 1])) // li[k])
+                except:
+                    break
+        if 'watevr{' in flag:
+            print(flag)
+            break
+
 
 # break repeating-key [xorz]
 

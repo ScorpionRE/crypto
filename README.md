@@ -42,6 +42,8 @@
 
 ## [流密码](docs/stream.md)
 
+- [x]  [watevrCTF 2019]Crypto over the intrawebs【z3】
+
 ### 随机数
 
 - [x] [GKCTF 2021]Random【MT19937】

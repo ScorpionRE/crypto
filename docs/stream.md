@@ -1,4 +1,90 @@
-# 流密码
+## [watevrCTF 2019]Crypto over the intrawebs【z3-solver】
+
+### 题目
+
+两个client，一个server文件，一个通信记录
+
+```python
+
+import socket, select, signal, string
+import sys, os, time, random
+import threading
+
+HOST = '198.51.100.0'
+PORT = 1337
+USERNAME = "Houdini"
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((socket.gethostname(), PORT))
+key = int(s.recv(1240).decode("utf-8").split(" ")[1])
+
+def encrypt(plaintext):
+	global USERNAME
+	global key
+	plaintext = USERNAME + ": " + plaintext
+	out = [random.randint(0, 9999), random.randint(0, 999)]
+	for i in range(len(plaintext)):
+		out.append((out[i+1] + ((out[i] * ord(plaintext[i])) ^ (key+out[i+1]))) ^ (key*out[i]))
+
+```
+
+### 解法
+
+已知量：out（conversation中的通信记录）
+
+未知量：key（密钥，需要求解）
+
+目标：plaintext，即得到key，解密conversation中的通信内容
+
+根据`KEY = random.randint(0, 100000000000000000000000)`可知key的位数大概为77位
+
+根据`plaintext = USERNAME + ": " + plaintext`
+
+而USERNAME是知道的，比如 USERNAME = "Houdini:" 包括冒号共知道10个字符，且知道加密代码：
+
+> ((out[i + 1] + ((out[i] * ord(plain[i])) ^ (key + out[i + 1]))) ^ (key * out[i]))==out[i+2]
+
+就可以得到10个方程，用z3求解
+
+不同的位数都可能求出key值，爆破这些key来找到可用于解密的key
+
+```python
+def z3key(out,plain):
+    #out.append((out[i+1] + ((out[i] * ord(plaintext[i])) ^ (key+out[i+1]))) ^ (key*out[i]))
+    for count in range(2,78):
+        key=BitVec('key',count)
+        s=Solver()
+        for i in range(8):
+            s.add(((out[i + 1] + ((out[i] * ord(plain[i])) ^ (key + out[i + 1]))) ^ (key * out[i]))==out[i+2])
+        s.check()
+        res=s.model()
+        print(res)
+        res = res[key].as_long().real
+        print(res)
+        f=open('conversation','r').readlines()
+        x=[]
+        for j in f:
+            x.append(j.strip())
+        flag=''
+        for j in range(1,len(x),2):
+            li=x[j].split(' ')
+            for k in range(1,len(li)):
+                li[k]=eval(li[k])
+            for k in range(1,len(li)-2):
+                try:
+                    flag += chr(((res + li[k + 1]) ^ (((res * li[k]) ^ li[k + 2]) - li[k + 1])) // li[k])
+                except:
+                    break
+        if 'watevr{' in flag:
+            print(flag)
+            break
+out=[8886, 42, 212351850074573251730471044, 424970871445403036476084342 ,5074088654060645719700112791577634658478525829848, 17980375751459479892183878405763572663247662296, 121243943296116422476619559571200060016769222670118557978266602062366168 ,242789433733772377162253757058605232140494788666115363337105327522154016 ,2897090450760618154631253497246288923325478215090551806927512438699802516318766105962219562904, 7372806106688864629183362019405317958359908549913588813279832042020854419620109770781392560]  #随便选一组即可
+plain='Houdini:'
+```
+
+
+
+# Xor
 
 
 
@@ -87,7 +173,7 @@ def mt19937(filename):
 
 
 
-
+# LFSR
 
 ## [AFCTF2018]tinylfsr
 
