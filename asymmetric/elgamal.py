@@ -38,3 +38,4 @@ print(long_to_bytes(x))
 #             bit = int(m, 2)
 #             c = encrypt(PK, SK, bit)
 #             f.write(str(c) + '\n')
+

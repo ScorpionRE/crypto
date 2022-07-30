@@ -9,6 +9,8 @@
 
 - [x] [GKCTF2021]XOR【dfs】
 
+- [x] [羊城杯2020]GMC【二次剩余】
+
   
 
 
@@ -75,6 +77,8 @@
 ## [离散对数](docs/discrete.md)
 
 - [x] [CISCN2018]crackme-java【Elgamal，多线程爆破r(int)】
+
+  
 
 
 

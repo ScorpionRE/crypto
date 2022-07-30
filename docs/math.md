@@ -234,7 +234,6 @@ flag = md5(str(a+b+c+d).encode()).hexdigest()
    aa\ xor \ bb == x1 \ mod \ 2^{round}
    $$
    
-
 2. 乘积与n1的后round位相同，即
    $$
    aa * bb \ mod \  2^{round} == n1 \ mod \ 2^{round}
@@ -335,5 +334,97 @@ def dfs2(x,n,len):
     print(b)
     print(a*b==n)
     return a,b
+```
+
+
+
+## [羊城杯2020]GMC【二次剩余】
+
+### 题目
+
+```python
+def gmc(a, p):
+    if pow(a, (p-1)//2, p) == 1:
+        return 1
+    else:
+        return -1
+
+
+
+def gen_key():
+    [gp,gq] = [getPrime(512) for i in range(2)]
+    gN = gp * gq
+    return gN, gq, gp
+
+
+def gen_x(gq,gp):
+    while True:
+        x = getRandomNBitInteger(512)
+        if gmc(x,gp) ^ gmc(x,gq) == -2:
+            return x
+
+
+def gen_y(gN):
+    gy_list = []
+    while len(gy_list) != F_LEN:
+        ty = getRandomNBitInteger(768)
+        if gcd(ty,gN) == 1:
+            gy_list.append(ty)
+    return gy_list
+
+
+if __name__ == '__main__':
+
+    flag = bin(bytes_to_long(flag))[2:] 
+    F_LEN = len(flag)
+    N, q, p = gen_key()
+    x = gen_x(q, p)
+    y_list = gen_y(N)
+    ciphertext = []
+
+    for i in range(F_LEN):
+        tc = pow(y_list[i],2) * pow(x,int(flag[i])) % N
+        ciphertext.append(tc)
+
+    with open('./output.txt','w') as f:
+        f.write(str(N) + '\n')
+        for i in range(F_LEN):
+            f.write(str(ciphertext[i]) + '\n')
+```
+
+### 解法
+
+已知量：N,ciphertext[i] (F_LEN=303)
+
+未知量：x(512),y(768)
+
+目标：flag，**看掉了加密用到的flag为二进制值！！！**
+
+ciphertext[i]与flag[i]有关,tc = pow(y[i],2)*pow(x,int(flag[i])) % N。
+
+x(512位的素数)满足条件：gmc(x,p)与gmc(x,q)一个结果为1，一个为-1，即是p，q其中一个的二次剩余，另一个不是，因此一定不是N的二次剩余
+
+y与n互素(那么与p，q互素），随机生成的303个y，pow(y[i],2)一定为N的二次剩余
+
+
+
+flag[i]只有0，1两种情况，那么就是是否乘以x的区别
+
+所以可以计算 ciphertext[i] mod N的雅可比符号，如果为-1，那么可以确定是乘了x的，即flag[i]为1，否则即为0
+
+可以直接用gmpy2.jacobi求雅可比符号
+
+```python
+N = 148760420796347282647913911627776948830239814743638812709731776000466100207777162738977240539627777504862891520483027225844332857730318919289377255562015896033182654334542973602513418626645338991446207189808474719558585195954666433739246138613004129695152347138574660937725372179703937058850684223201586238273
+flag = ''
+with open('output.txt','r') as f:
+    lines = f.readlines()
+    for line in lines:
+        cipher = int(line)
+        if gmpy2.jacobi(cipher,N) == -1:
+            flag += '1'
+        else:
+            flag += '0'
+    print(long_to_bytes(int(flag,2)))
 ```
 
