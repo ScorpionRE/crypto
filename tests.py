@@ -1,13 +1,39 @@
-import gmpy2
-from Crypto.Util.number import long_to_bytes
-N = 148760420796347282647913911627776948830239814743638812709731776000466100207777162738977240539627777504862891520483027225844332857730318919289377255562015896033182654334542973602513418626645338991446207189808474719558585195954666433739246138613004129695152347138574660937725372179703937058850684223201586238273
-flag = ''
-with open('output.txt','r') as f:
-    lines = f.readlines()
-    for line in lines:
-        cipher = int(line)
-        if gmpy2.jacobi(cipher,N) == -1:
-            flag += '1'
-        else:
-            flag += '0'
-    print(long_to_bytes(int(flag,2)))
+from binascii import hexlify,unhexlify
+from hashlib import md5
+from random import Random
+from randcrack import RandCrack
+from sympy import Predicate
+from Crypto.Util.number import long_to_bytes,bytes_to_long
+XOR = lambda s1 ,s2 : bytes([x1 ^ x2 for x1 ,x2 in zip(s1 , s2)])
+
+def decrypt(cipher , plain):
+    tmp = md5(plain).digest()
+    c = unhexlify(cipher)
+    key = XOR(c,tmp)
+    print(key,len(key))
+    return key
+
+flag = "npuctf{"
+tail = "}"
+
+
+
+with open('cipher.txt','r') as f:
+    cipher = f.read()
+    # 拆分为26个
+    key = []
+    Predicate_key = []
+    rc = RandCrack()
+    for i in range(8):
+        c = cipher[i*32:i*32+32]
+        key.append(decrypt(c,flag[i].encode()))
+        rc.submit(bytes_to_long(key[i]))
+        Predicate_key.append(rc.predict_getrandbits(32*19))
+        if decrypt(cipher[:-32],'}'.encode()) == Predicate_key[:-16]:
+            print(Predicate_key)
+            print("Done")
+            break;
+
+
+
+

@@ -2,7 +2,7 @@ import itertools
 
 import gmpy2
 import sympy
-
+from Crypto.Util.number import long_to_bytes
 
 import math
 #一元方程
@@ -190,3 +190,18 @@ def dfs2(x,n,len):
     print(b)
     print(a*b==n)
     return a,b
+
+
+#二次剩余，计算雅可比符号
+N = 148760420796347282647913911627776948830239814743638812709731776000466100207777162738977240539627777504862891520483027225844332857730318919289377255562015896033182654334542973602513418626645338991446207189808474719558585195954666433739246138613004129695152347138574660937725372179703937058850684223201586238273
+def jaco(N):
+    flag = ''
+    with open('output.txt','r') as f:
+        lines = f.readlines()
+        for line in lines:
+            cipher = int(line)
+            if gmpy2.jacobi(cipher,N) == -1:
+                flag += '1'
+            else:
+                flag += '0'
+        print(long_to_bytes(int(flag,2)))

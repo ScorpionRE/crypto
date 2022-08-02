@@ -813,6 +813,16 @@ for i in range(3):
 
 
 
+## [GXYCTF2019]CommonModulusAttack【共模】
+
+### 题目
+
+class文件，new.txt,old.txt,product.txt
+
+### 解法
+
+java在线反编译网站
+
 ## [GKCTF2021]RRRsa【数学式子化简】
 
 1）拿到两个式子后，先把**括号去掉**，然后把**常数项去掉**；

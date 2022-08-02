@@ -67,8 +67,7 @@
 - [x] [CISCN2020]bd【wiener】
 - [x] [CISCN2019]Asymmetric【phi】
 - [x] [强网杯2019]Copperstudy【Copper】
-
-
+- [ ] [GXYCTF2019]CommonModulusAttack【】
 
 
 
@@ -77,6 +76,8 @@
 ## [离散对数](docs/discrete.md)
 
 - [x] [CISCN2018]crackme-java【Elgamal，多线程爆破r(int)】
+
+- [x] uvw77ay_aiffip【diffle-hellman】
 
   
 
