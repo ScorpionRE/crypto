@@ -173,6 +173,190 @@ def mt19937(filename):
 
 
 
+## [NPUCTF2020]Mersenne twister【】
+
+### 题目
+
+cipher.txt和代码文件用到mt73991（魔改版梅森旋转！）
+
+```python
+assert len(flag) == 26
+assert flag[:7] == 'npuctf{'
+assert flag[-1] == '}'
+
+XOR = lambda s1 ,s2 : bytes([x1 ^ x2 for x1 ,x2 in zip(s1 , s2)])
+'''
+第一阶段：获得基础的梅森旋转链；
+第二阶段：对于旋转链进行旋转算法；
+第三阶段：对于旋转算法所得的结果进行处理；
+'''
+class mt73991:
+    # 根据seed初始化233的state
+    def __init__(self , seed):
+        self.state = [seed] + [0] * 232
+        self.flag = 0
+        self.srand()
+        self.generate()
+    def srand(self):
+        for i in range(232):
+            self.state[i+1] = 1812433253 * (self.state[i] ^ (self.state[i] >> 27)) - i
+            self.state[i+1] &= 0xffffffff
+
+    # 对状态进行旋转
+    def generate(self):
+        for i in range(233):
+            y = (self.state[i] & 0x80000000) | (self.state[(i+1)%233] & 0x7fffffff)
+            temp = y >> 1
+            temp ^= self.state[(i + 130) % 233]
+            if y & 1:
+                temp ^= 0x9908f23f
+            self.state[i] = temp
+    def getramdanbits(self):
+        if self.flag == 233:
+            self.generate()
+            self.flag = 0
+        bits = self.Next(self.state[self.flag]).to_bytes(4 , 'big')
+        self.flag += 1
+        return bits
+        
+    # 提取伪随机数
+    def Next(self , tmp):
+        tmp ^= (tmp >> 11)
+        tmp ^= (tmp << 7) & 0x9ddf4680
+        tmp ^= (tmp << 15) & 0xefc65400
+        tmp ^= (tmp >> 18) & 0x34adf670
+        return tmp
+
+def encrypt(key , plain):
+    tmp = md5(plain).digest()
+    return hexlify(XOR(tmp , key)) 
+
+if __name__ == "__main__":
+    flag = flag.encode()
+    random = mt73991(seed)
+    f = open('./cipher.txt' , 'wb')
+    for i in flag:
+        key = b''.join([random.getramdanbits() for _ in range(4)])
+        cipher = encrypt(key , chr(i).encode())
+        f.write(cipher)
+
+```
+
+### 解法
+
+魔改的MT73991，对比MT19937，发现本次内部寄存器有233个state。每次获取key（4个随机数，4*32共128位），然后加密对应flag字符（先md5，再与key异或）。
+
+由于题目给出前7个字符“npuctf{”，所以我们md5异或可以反向推出前28个状态，但是我们一共需要233个状态，所以只能爆破seed，通过截取第一次输出的key的前32位，并逆向next，就可以得到第一个state，所以只需要爆破32位的seed，让state[0]和得到的一样就可以了。 ？？【具体】
+
+
+
+但是根据最后的“}”是可以推seed的。
+
+注意到flag的长度只有26，那么key只调用getramdanbits()104次，class里的self.flag最大只有104，那么getramdanbits()每次执行时，并不会对原有的state进行修改
+
+state生成的时候，使用了i,i+1,i+130，当i=103时，state[103]最后会和state[233%233]=state[0]进行异或，那么我们只需要先求出state[103]，然后和state[0]异或，这样得到了y>>1，然后用上一题提到的方法恢复y的最后一位，这样我们就可以得到由oldstate[103]的第0位和oldstate[104]的1-31位组成的y。我们知道，第一次生成的state，相邻两个是有关系的。
+
+因此，我们只需要猜测104的第0位，然后用103和104的关系进行验证，就可以筛选出正确的oldstate[104]。之后，我们仿照MT19937中，对init的逆向，对本题的初始化过程逆向，就可以得到seed，进而得到所有的初始state。最后我们把所有可见字符的md5值列举出来，让输出文件和key异或，然后在枚举的md值中找到对应字符，就可以获得最终的flag。
+
+
+
+**逆向提取伪随机数（next）部分**
+
+tmp1 = tmp^( (tmp >> 18) & 0x34adf670 )
+
+tmp1的高18位实际上就是tmp的高18位与掩码异或的结果，所以只要tmp1^掩码即可得到tmp的高18位，从而得到tmp>>18的高36位，同理得到tmp1的高30位，经过有限步即可得到tmp。
+
+```python
+# right shift inverse
+def inverse_right(res, shift, bits=32):
+    tmp = res
+    for i in range(bits // shift):
+        tmp = res ^ tmp >> shift
+    return tmp
+
+
+# right shift with mask inverse
+def inverse_right_mask(res, shift, mask, bits=32):
+    tmp = res
+    for i in range(bits // shift):
+        tmp = res ^ tmp >> shift & mask
+    return tmp
+
+# left shift inverse
+def inverse_left(res, shift, bits=32):
+    tmp = res
+    for i in range(bits // shift):
+        tmp = res ^ tmp << shift
+    return tmp
+
+
+# left shift with mask inverse
+def inverse_left_mask(res, shift, mask, bits=32):
+    tmp = res
+    for i in range(bits // shift):
+        tmp = res ^ tmp << shift & mask
+    return tmp
+```
+
+
+
+除了根据不同运算进行逆向外，还可以直接根据运算本质进行，假设
+
+设state[i]的二进制表示形式为：$X_0X_1···X_{31}$
+
+输出的随机数二进制形式为：$Z_0Z_1···Z_{31}$
+
+而z和x具有如下线性关系：
+
+![image-20220807220115494](stream.assets/image-20220807220115494.png)
+
+其中X,Z是GF(2)上的1 x 32的向量，T是GF(2)上的 32 x 32的矩阵。我们只需要在GF(2)上求解X即可。已知Z，如果T也已知，可以快速的求解出X。那么如何计算T呢？
+
+实际上我们可以采用黑盒测试的方法，猜解T。例如当X为(1,0,0,0,…..0)时，经过T得到的Z其实就是T中第一行。采用这种类似选择明文攻击的方法，我们可以得到T矩阵的每一行，进而还原T。最后再利用T和Z得到原始的X
+
+```python
+from sage.all import *
+from random import Random
+
+def buildT():
+    rng = Random()
+    T = matrix(GF(2),32,32)
+    for i in range(32):
+        s = [0]*624
+        # 构造特殊的state
+        s[0] = 1<<(31-i)
+        rng.setstate((3,tuple(s+[0]),None))
+        tmp = rng.getrandbits(32)
+        # 获取T矩阵的每一行
+        row = vector(GF(2),[int(x) for x in bin(tmp)[2:].zfill(32)])
+        T[i] = row
+    return T
+
+def reverse(T,leak):
+    Z = vector(GF(2),[int(x) for x in bin(leak)[2:].zfill(32)])
+    X = T.solve_left(Z)
+    state = int(''.join([str(i) for i in X]),2)
+    return state
+
+def test():
+    rng = Random()
+    # 泄露信息
+    leak = [rng.getrandbits(32) for i in range(32)]
+    originState = [i for i in rng.getstate()[1][:32]]
+    # 构造矩阵T
+    T = buildT()
+    recoverState = [reverse(T,i) for i in leak]
+    print(recoverState==originState)
+
+test()
+```
+
+http://blog.tolinchan.xyz/2021/07/27/梅森旋转算法研究/#11.%5BNPUCTF2020%5DMersenne-twister
+
+https://www.anquanke.com/post/id/205861#h2-2
+
+
+
 # LFSR
 
 ## [AFCTF2018]tinylfsr

@@ -197,6 +197,73 @@ def mt19937(filename):
     aa=rc.predict_getrandbits(32)
     print(md5(str(aa).encode()).hexdigest())
 
+# 魔改梅森旋转mt97731
+# 逆向next部分（提取伪随机数部分），
+# right shift inverse
+def inverse_right(res, shift, bits=32):
+    tmp = res
+    for i in range(bits // shift):
+        tmp = res ^ tmp >> shift
+    return tmp
+
+
+# right shift with mask inverse
+def inverse_right_mask(res, shift, mask, bits=32):
+    tmp = res
+    for i in range(bits // shift):
+        tmp = res ^ tmp >> shift & mask
+    return tmp
+
+# left shift inverse
+def inverse_left(res, shift, bits=32):
+    tmp = res
+    for i in range(bits // shift):
+        tmp = res ^ tmp << shift
+    return tmp
+
+
+# left shift with mask inverse
+def inverse_left_mask(res, shift, mask, bits=32):
+    tmp = res
+    for i in range(bits // shift):
+        tmp = res ^ tmp << shift & mask
+    return tmp
+
+# sage, 逆向提取伪随机数部分（X(state，1*32) * T（32*32） = Z(输出的随机数 1*32) 
+# from sage.all import *
+# from random import Random
+
+# def buildT():
+#     rng = Random()
+#     T = matrix(GF(2),32,32)
+#     for i in range(32):
+#         s = [0]*624
+#         # 构造特殊的state
+#         s[0] = 1<<(31-i)
+#         rng.setstate((3,tuple(s+[0]),None))
+#         tmp = rng.getrandbits(32)
+#         # 获取T矩阵的每一行
+#         row = vector(GF(2),[int(x) for x in bin(tmp)[2:].zfill(32)])
+#         T[i] = row
+#     return T
+
+# def reverse(T,leak):
+#     Z = vector(GF(2),[int(x) for x in bin(leak)[2:].zfill(32)])
+#     X = T.solve_left(Z)
+#     state = int(''.join([str(i) for i in X]),2)
+#     return state
+
+# def test():
+#     rng = Random()
+#     # 泄露信息
+#     leak = [rng.getrandbits(32) for i in range(32)]
+#     originState = [i for i in rng.getstate()[1][:32]]
+#     # 构造矩阵T
+#     T = buildT()
+#     recoverState = [reverse(T,i) for i in leak]
+#     print(recoverState==originState)
+
+
 
 # mask=0b10100100000010000000100010010100 #0,2,5,12,20,24,27,29
 

@@ -49,6 +49,7 @@
 ### 随机数
 
 - [x] [GKCTF 2021]Random【MT19937】
+- [x] [NPUCTF2020]Mersenne twister【output->state->seed,MT97731】
 
 ### LFSR
 
@@ -67,6 +68,7 @@
 - [x] [CISCN2020]bd【wiener】
 - [x] [CISCN2019]Asymmetric【phi】
 - [x] [强网杯2019]Copperstudy【Copper】
+- [ ] [羊城杯2020]simple【】
 - [ ] [GXYCTF2019]CommonModulusAttack【】
 
 
