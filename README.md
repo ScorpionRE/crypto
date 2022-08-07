@@ -68,7 +68,7 @@
 - [x] [CISCN2020]bd【wiener】
 - [x] [CISCN2019]Asymmetric【phi】
 - [x] [强网杯2019]Copperstudy【Copper】
-- [ ] [羊城杯2020]simple【】
+- [x] [羊城杯2020]simple【】
 - [ ] [GXYCTF2019]CommonModulusAttack【】
 
 
@@ -83,7 +83,7 @@
 
   
 
-
+- [x] [UTCTF2020]Cube Crypto【Anshel-Goldfeld key exchange】
 
 ## 背包密码
 
