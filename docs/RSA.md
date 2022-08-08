@@ -485,7 +485,139 @@ $$
 
  	
 
+## [羊城杯2020]simple[ex_wiener，两个e]
 
+### 题目
+
+```python
+key = "abcdefgh"
+
+def des_encrypt(m):
+    des = DES.new(key, DES.MODE_ECB)
+    res = des.encrypt(m)
+    return res
+
+def des_decrypt(c):
+    des = DES.new(key,DES.MODE_ECB)
+    res = des.decrypt(c)
+    return res
+
+t = bytes_to_long(des_decrypt(long_to_bytes(e)))
+
+def gen_key():
+    p = getPrime(2048)
+    q = getPrime(2048)
+    n = p * q 
+    bit = n.bit_length()
+    phi_n = (p - 1) * (q - 1)
+    num = random.randint(1, 100)
+    while True:
+        u = getPrime(bit / 4 - num)
+        if gmpy2.gcd(u, phi_n) != 1:
+            continue
+        t = gmpy2.invert(u, phi_n) 
+        e = bytes_to_long(des_encrypt(long_to_bytes(t)))  # key已知，可以直接根据这里得到t，
+        if gmpy2.gcd(e, phi_n) == 1:
+            break
+    return (n, e)
+
+P = getPrime(1024)
+Q = getPrime(1024)
+N = P * Q
+E = 65537
+lcm = gmpy2.lcm(P-1, Q-1)  #最大公倍数
+e1 = gmpy2.invert(getPrime(730), lcm)
+e2 = gmpy2.invert(getPrime(730), lcm)
+m = bytes_to_long(flag)
+c = pow(m, E, N)
+print "N = " + str(N)
+print "e2 = " + str(e2)
+print "c = " + str(c)
+_n, _e = gen_key()
+_c = pow(e1, _e, _n)
+print "_n = " + str(_n)
+print "_e = " + str(_e)
+print "_c = " + str(_c)
+
+```
+
+### 解法
+
+要得到flag，需要解密第一部分关系，显然与e1，e2有关。e1为第二部分的明文，所以先解密第二部分
+
+_n,_e都是通过gen_key()得到的，key也已知，可以先得到t，可以发现t和_n位数只差1，说明t很大，可以用维纳攻击得到u
+
+相当于已知e,d,n，求p,q
+
+```python
+def factorn(e,d,n):
+    k = e * d - 1
+    
+    r = k
+    t = 0
+    while True:
+        r = r // 2
+        t += 1
+        if r % 2 == 1:
+            break
+    
+    success = False
+    
+    for i in range(1, 101):
+        g = random.randint(0, n)
+        y = pow(g, r, n)
+        if y == 1 or y == n - 1:
+            continue
+    
+        for j in range(1, t):
+            x = pow(y, 2, n)
+            if x == 1:
+                success = True
+                break
+            elif x == n - 1:
+                continue
+            else:
+                y = x
+    
+        if success:
+            break
+        else:
+            continue
+    
+    if success:
+        p = libnum.gcd(y - 1, n)
+        q = n // p
+        print ('P: ' + '%s' % p)
+        print ('Q: ' + '%s' % q)
+        return p,q
+    else:
+        print ('Cannot compute P and Q')
+```
+
+最后解密得到e1
+
+得到e1、e2后可以根据ex wiener’s approach进行求解
+
+```python
+def ex_wiener(e1,e2,n,e,c):
+    D = diagonal_matrix(ZZ, [N, int(N^(1/2)), int(N^(1+a)), 1])
+    M = matrix(ZZ, [[1, -N, 0, N^2], [0, e1, -e1, -e1*N], [0, 0, e2, -e2*N], [0, 0, 0, e1*e2]])*D
+    L = M.LLL()
+    t = vector(ZZ, L[0])
+    x = t * M^(-1)
+    phi = int(x[1]/x[0]*e1)
+    d = gmpy2.invert(E,phi)
+    print(d)
+    m = pow(c,d,N)
+    print(m)
+    return m
+```
+
+
+
+https://icode.best/i/19960949426142
+
+http://www.vigorous.top/archives/84
 
 ## ！[watevrCTF 2019]Swedish RSA【多项式】
 

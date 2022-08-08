@@ -68,7 +68,7 @@
 - [x] [CISCN2020]bd【wiener】
 - [x] [CISCN2019]Asymmetric【phi】
 - [x] [强网杯2019]Copperstudy【Copper】
-- [x] [羊城杯2020]simple【】
+- [x] [羊城杯2020]simple【ex_wiener，两个e】
 - [ ] [GXYCTF2019]CommonModulusAttack【】
 
 

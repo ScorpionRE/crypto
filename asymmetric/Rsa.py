@@ -1,7 +1,9 @@
 import base64
 import binascii
+from cmath import sqrt
 import codecs
 import linecache
+import random
 
 import libnum
 import owiener
@@ -749,17 +751,17 @@ def getit(c):
         cf.append(simplify(c[:i]))
     return cf
 
-def wiener(N1,N2):
+def wiener(e,n):
     cf = []
     for (Q2,Q1) in getit(cf):
         if Q1 == 0:
             continue
-        if N1%Q1 == 0 and Q1 != 1:
+        if e%Q1 == 0 and Q1 != 1:
             return Q1
     print("not found")
     return 0
 
-#Q1 = wiener(e,n)
+#d = wiener(e,n)
 
 
 
@@ -774,10 +776,7 @@ def owienerk(e,n):
         print("Hacked d={}".format(d))
         return d
 
-#给出具有相关性的一些式子，变形，然后求公因式，得到p/q
-def g():
-    com = gmpy2.gcd()
-    return com
+
 
 # c = m^n mod n  Schmidt-Samoa
 def schmit_samoa(N,d,c):
@@ -786,7 +785,7 @@ def schmit_samoa(N,d,c):
     m = pow(c, d, pq)
     print(n2s(m))
 
-#根据c求m
+#已知e,p,q求d
 def get_d(e,p,q):
     phi_n = (p - 1) * (q - 1)
     #若无法直接求逆元d
@@ -796,7 +795,64 @@ def get_d(e,p,q):
     print("d:"+ str(d))
     return d
 
-def decrypt(e, c, d, n):
+#已知p+q为sum，p*q为n，求p和q
+def get_pq(sum,n):
+    p = (sum + sqrt(sum**2-4*n))/2
+    q = (sum - sqrt(sum**2-4*n))/2
+    print(p,q)
+    return p,q
+#已知e,d,n求p，q
+# ed = 1 mod phi(n) = 1 + k*phi
+# n = p*q   phi(n) = (p-1)*(q-1) = p*q - p - q + 1 = n - p - q + 1 = n - p - n/p + 1
+# p 
+def factorn(e,d,n):
+    k = e * d - 1
+    
+    r = k
+    t = 0
+    while True:
+        r = r // 2
+        t += 1
+        if r % 2 == 1:
+            break
+    
+    success = False
+    
+    for i in range(1, 101):
+        g = random.randint(0, n)
+        y = pow(g, r, n)
+        if y == 1 or y == n - 1:
+            continue
+    
+        for j in range(1, t):
+            x = pow(y, 2, n)
+            if x == 1:
+                success = True
+                break
+            elif x == n - 1:
+                continue
+            else:
+                y = x
+    
+        if success:
+            break
+        else:
+            continue
+    
+    if success:
+        p = libnum.gcd(y - 1, n)
+        q = n // p
+        print ('P: ' + '%s' % p)
+        print ('Q: ' + '%s' % q)
+        return p,q
+    else:
+        print ('Cannot compute P and Q')
+
+
+
+
+
+def decrypt(c, d, n):
     M = pow(c,d,n)
 
     #e不是素数，需要分解，变形后，m是之前的x次方
