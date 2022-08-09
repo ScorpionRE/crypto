@@ -945,17 +945,346 @@ for i in range(3):
 
 
 
-## [GXYCTF2019]CommonModulusAttack【共模】
+## [GXYCTF2019]CommonModulusAttack【有限域，广播攻击(e相同,n不同），随机数】
 
 ### 题目
 
 class文件，new.txt,old.txt,product.txt
 
+```java
+/*
+ * Decompiled with CFR 0.150.
+ */
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.math.BigInteger;
+import java.nio.file.Paths;
+import java.security.Key;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+public class CommonModulusAttack {
+    private long seeds = -67484274725178L;
+    private Random random = new Random(seeds^0x5DEECE66DL);
+    private ArrayList<BigInteger> states = new ArrayList(24);
+    private String seed;
+    private int statespoint = 0;
+    private int stateselse = 24;
+
+    public void oldtest() {
+        try {
+            // old中得到类中random的值，共20个,即n
+            PrintWriter printWriter = new PrintWriter("old.txt", "UTF-8");
+            for (int i = 0; i < 19; ++i) {
+                int n = this.random.nextInt();
+                printWriter.println(n);
+            }
+            printWriter.close();
+        }
+        catch (IOException iOException) {
+            iOException.printStackTrace();
+        }
+    }
+
+    public BigInteger generate_init_state() {
+        char[] arrc;
+        BigInteger bigInteger = BigInteger.valueOf(0L);
+        for (char c : arrc = this.seed.toCharArray()) {
+            bigInteger = bigInteger.shiftLeft(1);
+            if (c == '1') {
+                bigInteger = bigInteger.xor(new BigInteger(this.seed, 2));
+            }
+            if (bigInteger.shiftRight(256) == BigInteger.ZERO) continue;
+            bigInteger = bigInteger.xor(new BigInteger("10000000000000000000000000000000000000000000000000000000000000223", 16));
+        }
+        return bigInteger;
+    }
+    // 生成状态，
+    public void gen_states() {
+        BigInteger bigInteger = this.generate_init_state();
+        BigInteger bigInteger2 = BigInteger.valueOf(17L);
+        ArrayList<BigInteger> arrayList = new ArrayList<BigInteger>(24);
+        ArrayList<BigInteger> arrayList2 = new ArrayList<BigInteger>(24);
+        for (int i = 0; i < 24; ++i) {
+            BigInteger bigInteger3 = BigInteger.probablePrime(512, this.random); // p
+            BigInteger bigInteger4 = BigInteger.probablePrime(512, this.random); // q
+            
+            BigInteger bigInteger5 = bigInteger3.multiply(bigInteger4); // n 
+            BigInteger bigInteger6 = bigInteger.modPow(bigInteger2, bigInteger5);  // seed^17 mod n
+            arrayList.add(bigInteger5); 
+            arrayList2.add(bigInteger6);
+        }
+        try {
+            PrintWriter printWriter = new PrintWriter("product", "UTF-8");
+            for (int i = 0; i < 24; ++i) {
+                printWriter.println(((BigInteger)arrayList.get(i)).toString()); // product中都是n,都不能直接分解
+                this.states.add((BigInteger)arrayList2.get(i)); // states为模后的结果
+            }
+            printWriter.close();
+        }
+        catch (IOException iOException) {
+            iOException.printStackTrace();
+        }
+    }
+
+   
+    // AES，CBC，每128位加密 只有128/129两种可能？
+    // 
+
+    public byte[] encrypt(BigInteger bigInteger) {
+        try {
+            int n;
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(new byte[16]);
+            //System.out.println(ivParameterSpec.getIV());
+            byte[] arrby = new byte[16];
+            this.random.nextBytes(arrby);
+            //System.out.println(byte2hex(arrby));
+            SecretKeySpec secretKeySpec = new SecretKeySpec(arrby, "AES");
+            Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
+            System.out.println(byte2hex(secretKeySpec.getEncoded()));
+            cipher.init(1, (Key)secretKeySpec, ivParameterSpec);  //key是随机的,iv也是随机的?
+
+            byte[] arrby2 = new byte[128];
+            byte[] arrby3 = bigInteger.toByteArray();
+            if (arrby3.length == 129) {
+                for (n = 0; n < 128; ++n) {
+                    arrby2[n] = arrby3[n + 1]; //舍弃第一位
+                }
+            } else {
+                for (n = 0; n < 128; ++n) {
+                    arrby2[n] = arrby3[n];
+                }
+            }
+            byte[] arrby4 = cipher.doFinal(arrby2);
+            return arrby4;
+        }
+        catch (Exception exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
+
+    public void gen_new_states() {
+        for (int i = 0; i < 24; ++i) {
+            BigInteger bigInteger = this.states.get(this.statespoint - 24 + i);
+            byte[] arrby = this.encrypt(bigInteger);
+            this.states.add(new BigInteger(arrby));
+        }
+        this.stateselse += 24;
+    }
+
+    public byte[] stateconvert(BigInteger bigInteger) {
+        byte[] arrby = this.encrypt(bigInteger);
+        return arrby;
+    }
+    // 将输出states即密文c，加密
+    public byte[] lrandout() {
+        if (this.stateselse > 0) {
+            --this.stateselse;
+            BigInteger bigInteger = this.states.get(this.statespoint);
+            ++this.statespoint;
+            return this.stateconvert(bigInteger);
+        }
+        this.gen_new_states();
+        return this.lrandout();
+    }
+
+    public static String byte2hex(byte[] arrby) {
+        StringBuffer stringBuffer = new StringBuffer(arrby.length * 2);
+        for (int i = 0; i < arrby.length; ++i) {
+            if ((arrby[i] & 0xFF) < 16) {
+                stringBuffer.append("0");
+            }
+            stringBuffer.append(Long.toString(arrby[i] & 0xFF, 16));
+        }
+        return stringBuffer.toString();
+    }
+
+    public static String convert_2_binary(String string) {
+        byte[] arrby = string.getBytes();
+        StringBuilder stringBuilder = new StringBuilder();
+        byte[] arrby2 = arrby;
+        int n = arrby2.length;
+        for (int i = 0; i < n; ++i) {
+            int n2;
+            int n3 = n2 = arrby2[i];
+            for (int j = 0; j < 8; ++j) {
+                stringBuilder.append((n3 & 0x80) == 0 ? 0 : 1);
+                n3 <<= 1;
+            }
+        }
+        return stringBuilder.toString();
+    }
+    // 用转二进制后的flag初始化seed，即flag为seed
+    public void initseed() {
+        // try {
+            String string;
+            //Scanner scanner = new Scanner(Paths.get("flag", new String[0]), "UTF-8");
+            //String string2 = scanner.next();
+            String string2 = "tflag{zhendehuixie}";
+            this.seed = string = CommonModulusAttack.convert_2_binary(string2);
+        //}
+        // catch (IOException ) {
+        //     iOException.printStackTrace();
+        // }
+    }
+
+    public static void main(String[] arrstring) {
+        CommonModulusAttack commonModulusAttack = new CommonModulusAttack();
+        commonModulusAttack.oldtest();
+        commonModulusAttack.initseed();
+        commonModulusAttack.gen_states();
+        // 24个state，结果没有任何处理
+        for (int i = 0; i < 24; ++i) {
+            commonModulusAttack.lrandout();
+        }
+        try {
+            PrintWriter printWriter = new PrintWriter("new.txt", "UTF-8");
+            for (int i = 0; i < 24; ++i) {
+                // 再调用一次lrandout()，结果写进new中，但再次调用时会gen_new_states()然后再调用lrandout
+                printWriter.println(CommonModulusAttack.byte2hex(commonModulusAttack.lrandout()));
+            }
+            printWriter.close();
+        }
+        catch (IOException iOException) {
+            iOException.printStackTrace();
+        }
+        System.out.println("Bye!");
+    }
+}
+
+```
+
+
+
 ### 解法
 
 java在线反编译网站 http://www.javadecompilers.com
 
+阅读代码。要获得flag，需要得到seed，而seed主要用于generate_init_state()中，其生成的bitinteger作为明文，计算seed^17 mod n
 
+n在文件product中，密文c则保存在states中。
+
+然后调用lrandout()输出加密states后的密文c，
+
+所以需要首先将new中的密文c用decrypt解密，但是aes加密key是随机的，但也是random.next，所以应该是和old.txt有关，可以根据随机数得到seed
+
+```java
+import java.util.Random;
+
+public class randomcrack {
+    // implemented after https://docs.oracle.com/javase/7/docs/api/java/util/Random.html
+    public static int next(long seed) {
+        int bits=32;
+        long seed2 = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1);
+        return (int)(seed2 >>> (48 - bits));
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Starting");
+        long i1 = -1029728314L;
+        long i2 = 1487023297;
+        long seed =0;
+        for (int i = 0; i < 65536; i++) {
+            seed = i1 *65536 + i;
+            if (next(seed) == i2) {
+                System.out.println("Seed found: " + seed);
+               break;
+            }
+        }
+        Random random = new Random((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1));
+        for(int i = 0; i < 19; i++) {
+            System.out.println("No." + i + "int" + random.nextInt());
+        }
+        byte[] arrby = new byte[16];
+        random.nextBytes(arrby);
+
+        System.out.println(arrby);
+
+    }
+}
+
+```
+
+真的会谢！！！ 在生成p、q时也用到了random生成，所以还是需要在原来代码里面得到所有用到的key！！（否则直接在之前的后面生成netbytes不对！！！ 
+
+然后直接放到原代码中，会看到old.txt中比原来多生成了一个（需要把多余生成的删掉！！！即只需要循环条件改为i<19
+
+然后自定义flag，运行原代码得到AES的key，输出key时若出现`java.lang.ArrayIndexOutOfBoundsException: Index 127 out of bounds for length 127`说明应该是flag设置的太短了。最后成功得到所有AES的key，但是前24个密钥实际上没有用到，中间24个密钥是扩展`states`所用到的，后24个密钥是生成`new.txt`中密文所用到的
+
+解密后，n相同，c相同，利用广播攻击即可求得seed(flag)^17，（所以这题和共模攻击有关系？？？？）
+
+开17次方就可以得到m
+
+但是initseed()中在GF(256)中把flag平方，所以还需要再开方才行! 
+
+```python
+from binascii import unhexlify
+from sympy.ntheory.modular import crt
+from Crypto.Cipher import AES
+from Crypto.Util.number import bytes_to_long,long_to_bytes
+import gmpy2 
+
+
+with open('new.txt','r') as f:
+    news = [unhexlify(line.strip()) for line in f ]
+    #print(cipher)
+with open('key','r') as k:
+    keys = [unhexlify(line.strip()) for line in k]
+    #print(key)
+
+with open('product','r') as n:
+    n = [int(line.strip()) for line in n]
+    #print(n)
+
+# Get states_2
+states_2 = []
+iv = b'\x00' * 16
+for i in range(48, 72):
+    cipher = AES.new(keys[i], AES.MODE_CBC, iv)
+    states_2.append(cipher.decrypt(news[i-48]))
+
+# Get states_1 (c)
+states_1 = []
+for i in range(24, 48):
+    cipher = AES.new(keys[i], AES.MODE_CBC, iv)
+    states_1.append(cipher.decrypt(states_2[i-24]))
+c = [bytes_to_long(x) for x in states_1]
+#print(c)
+# 广播攻击
+M = crt(n,c)[0]
+print(M)
+m = gmpy2.iroot(M,17)[0]
+print(long_to_bytes(m))
+
+
+def mul(x):
+    a = 0
+    for i in bin(x)[2:]:
+        a = a << 1
+        if (int(i)):
+            a = a ^ x
+        if a >> 256:
+            a = a ^ 0x10000000000000000000000000000000000000000000000000000000000000223
+    return a
+
+# 有限域计算
+def dec2(m):
+    while True:
+        m = mul(m)
+        if b"flag" in long_to_bytes(m):
+            print(long_to_bytes(m))
+            break
+dec2(m)
+```
+
+
+
+https://zhuanlan.zhihu.com/p/361418329
 
 ## [GKCTF2021]RRRsa【数学式子化简】
 

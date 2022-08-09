@@ -66,10 +66,10 @@
 - [x] [GUET-CTF2019]Uncle Sam【c = m^n mod n】
 - [x] [CISCN2020] rsa【n=p1p2p3】
 - [x] [CISCN2020]bd【wiener】
+- [x] [羊城杯2020]simple【ex_wiener，两个e】
 - [x] [CISCN2019]Asymmetric【phi】
 - [x] [强网杯2019]Copperstudy【Copper】
-- [x] [羊城杯2020]simple【ex_wiener，两个e】
-- [ ] [GXYCTF2019]CommonModulusAttack【】
+- [x] [GXYCTF2019]CommonModulusAttack【有限域，广播攻击(e相同,n不同），随机数】
 
 
 
