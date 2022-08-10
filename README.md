@@ -114,3 +114,4 @@
 
 - [x] [BSidesSF2019]slashslash【openssl+zip注释】
 - [x] [Zer0pts2020]ROR【奇偶性】
+- [x] [b01lers2020]crypto_crossword【】
