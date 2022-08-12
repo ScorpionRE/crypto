@@ -1754,6 +1754,55 @@ https://www.ruanx.net/coppersmith/
 
 
 
+## ？[羊城杯 2020]Invitations【Hastad Attack】
+
+### 题目
+
+chall.py和invitations
+
+```python
+def pad(s,i):
+    return i * pow(3,s.bit_length()) + s**2
+
+def gen_N():
+    return getPrime(512) * getPrime(512)
+
+
+assert len(flag) == 54
+invite = bytes_to_long(flag)
+
+e_list = [random.choice([3,5,7]) for i in range(14)]
+N_list = [gen_N() for i in range(14)]
+
+with open('./invitations','w') as f:
+    for i in range(14):
+        invis = pow(pad(invite,i+1),e_list[i],N_list[i])
+        f.write('Invitation%d: %d \n'%(i+1,invis))
+
+    f.write('Wait a minute! \n')
+
+    for i in range(14):
+        f.write('[e%d,N%d]: [%d,%d]\n'%(i+1,i+1,e_list[i],N_list[i]))
+```
+
+
+
+### 解法
+
+已知：e，N，invis
+
+invite=bytes_to_long(flag),所以主要需要求invite，
+
+m = (i+1)*3^431(flag位数) + flag^2  #flag都是不变的，i是变量
+
+invis = m^e[i] mod n[i] = c[i] 
+
+已知一系列e[i](3,5,7),n[i],c[i]
+
+https://lazzzaro.github.io/2020/05/06/crypto-RSA/index.html
+
+http://www.ga1axy.top/index.php/archives/49/
+
 # 理论
 
 ## Fermat Attack 

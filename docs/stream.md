@@ -82,6 +82,77 @@ out=[8886, 42, 212351850074573251730471044, 424970871445403036476084342 ,5074088
 plain='Houdini:'
 ```
 
+## [NPUCTF2020]babyLCG【】
+
+### 题目
+
+```python
+class LCG:
+    def __init__(self, bit_length):
+        m = getPrime(bit_length)
+        a = getRandomRange(2, m)
+        b = getRandomRange(2, m)
+        seed = getRandomRange(2, m)
+        self._key = {'a':a, 'b':b, 'm':m}
+        self._state = seed
+        
+    def next(self):
+        self._state = (self._key['a'] * self._state + self._key['b']) % self._key['m'] # Si+1 = a*S + b mod m
+        return self._state
+    
+    def export_key(self):
+        return self._key
+
+
+def gen_lcg():
+    rand_iter = LCG(128)
+    key = rand_iter.export_key()
+    f = open("key", "w")
+    f.write(str(key))
+    return rand_iter
+
+
+def leak_data(rand_iter):
+    f = open("old", "w")
+    for i in range(20):
+        f.write(str(rand_iter.next() >> 64) + "\n") # 只知道低64位
+    return rand_iter
+
+
+def encrypt(rand_iter):
+    f = open("ct", "wb")
+    key = rand_iter.next() >> 64
+    key = (key << 64) + (rand_iter.next() >> 64)
+    key = long_to_bytes(key).ljust(16, b'\x00')
+    iv = long_to_bytes(rand_iter.next()).ljust(16, b'\x00')
+    cipher = AES.new(key, AES.MODE_CBC, iv)
+    pt = flag + (16 - len(flag) % 16) * chr(16 - len(flag) % 16) #填充flag
+    ct = cipher.encrypt(pt.encode())
+    f.write(ct)
+
+
+def main():
+    rand_iter = gen_lcg()
+    rand_iter = leak_data(rand_iter)
+    encrypt(rand_iter)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+
+
+### 解法
+
+本来寻思着是不是可以参考https://ctf.plus/archives/9559用coppersmith恢复seed，但不知道为什么恢复不了，不知道是不是和位数有关？
+
+但是给了20组数据，应该还是得用格计算
+
+
+
+
+
 
 
 # Xor

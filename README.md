@@ -45,6 +45,7 @@
 ## [流密码](docs/stream.md)
 
 - [x]  [watevrCTF 2019]Crypto over the intrawebs【z3】
+- [ ]  [NPUCTF2020]babyLCG【】
 
 ### 随机数
 
@@ -70,6 +71,7 @@
 - [x] [CISCN2019]Asymmetric【phi】
 - [x] [强网杯2019]Copperstudy【Copper】
 - [x] [GXYCTF2019]CommonModulusAttack【有限域，广播攻击(e相同,n不同），随机数】
+- [x] [羊城杯2020]invitations【hasted attack】 
 
 
 
